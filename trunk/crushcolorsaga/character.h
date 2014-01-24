@@ -6,7 +6,11 @@
 class Character : public QGraphicsItem
 {
     public:
-        Character();
+        Character(int id);
+
+        virtual QRectF boundingRect() const;
+
+        virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     public slots:
         void moveLeft();
@@ -14,6 +18,9 @@ class Character : public QGraphicsItem
         void stop();
         void jump();
         void hit();
+
+    private:
+        int _id;
 };
 
 #endif // CHARACTER_H
