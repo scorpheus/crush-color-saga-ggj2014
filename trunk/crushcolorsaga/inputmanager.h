@@ -9,6 +9,13 @@ class InputManager : public QObject
 
     public:
         explicit InputManager(QObject *parent = 0);
+
+        virtual bool eventFilter(QObject *, QEvent *);
+
+    signals:
+        void moveLeft();
+        void moveRight();
+        void jump();
 };
 
 #endif // INPUTMANAGER_H
