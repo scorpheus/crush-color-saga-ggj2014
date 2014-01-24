@@ -5,8 +5,15 @@
 
 class Character : public QGraphicsItem
 {
-public:
-    Character();
+    public:
+        Character();
+
+    public slots:
+        void moveLeft();
+        void moveRight();
+        void stop();
+        void jump();
+        void hit();
 };
 
 #endif // CHARACTER_H

@@ -1,14 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <level.h>
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    _ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    _ui->setupUi(this);
+
+    _ui->graphicsView->setScene(new Level());
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete _ui;
 }

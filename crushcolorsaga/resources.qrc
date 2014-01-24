@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/models">
+        <file alias="bloc">bg_bloc01.png</file>
+    </qresource>
+</RCC>
