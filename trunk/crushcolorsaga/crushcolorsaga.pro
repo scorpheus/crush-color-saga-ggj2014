@@ -18,14 +18,19 @@ SOURCES += main.cpp\
     level.cpp \
     platform.cpp \
     inputmanager.cpp \
-    gameconfigurationdialog.cpp
+    gameconfigurationdialog.cpp \
+    background.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
     level.h \
     platform.h \
     inputmanager.h \
-    gameconfigurationdialog.h
+    gameconfigurationdialog.h \
+    background.h
 
 FORMS    += mainwindow.ui \
     gameconfigurationdialog.ui
+
+RESOURCES += \
+    resources.qrc
