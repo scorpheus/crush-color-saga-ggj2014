@@ -16,7 +16,7 @@ Level::Level(QObject *parent) :
     addItem(character1);
 
     InputManager *inputManager = new InputManager(this);
-    connect(inputManager, SIGNAL(jump1()), character1, SLOT(jump()));
-    connect(inputManager, SIGNAL(moveLeft1()), character1, SLOT(moveLeft()));
+    connect(inputManager, SIGNAL(jump1()),      character1, SLOT(jump()));
+    connect(inputManager, SIGNAL(moveLeft1()),  character1, SLOT(moveLeft()));
     connect(inputManager, SIGNAL(moveRight1()), character1, SLOT(moveRight()));
 }
