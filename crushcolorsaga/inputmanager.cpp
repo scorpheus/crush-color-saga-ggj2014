@@ -7,9 +7,32 @@
 InputManager::InputManager(QObject *parent) :
     QObject(parent),
     _states1(Character::Idle),
-    _states2(Character::Idle)
+    _states2(Character::Idle),
+    _timerStopHit1(new QTimer(this)),
+    _timerStopHit2(new QTimer(this))
 {
     QCoreApplication::instance()->installEventFilter(this);
+
+    connect(_timerStopHit1, SIGNAL(timeout()), SLOT(stopHit()));
+    _timerStopHit1->setInterval(200);
+    connect(_timerStopHit2, SIGNAL(timeout()), SLOT(stopHit()));
+    _timerStopHit2->setInterval(200);
+}
+
+void InputManager::stopHit()
+{
+    if(sender() == _timerStopHit1)
+    {
+        _states1 &= ~Character::HittingLeft;
+        _states1 &= ~Character::HittingRight;
+        emit state1(_states1);
+    }
+    else if(sender() == _timerStopHit2)
+    {
+        _states2 &= ~Character::HittingLeft;
+        _states2 &= ~Character::HittingRight;
+        emit state2(_states2);
+    }
 }
 
 bool InputManager::eventFilter(QObject *object, QEvent *event)
@@ -49,6 +72,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                     _states1 |= Character::HittingRight;
                 }
                 emit state1(_states1);
+                _timerStopHit1->start();
                 return true;
             }
             else if(key == Qt::Key_Z)
@@ -80,6 +104,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                     _states2 |= Character::HittingRight;
                 }
                 emit state2(_states2);
+                _timerStopHit2->start();
                 return true;
             }
         }
@@ -110,14 +135,8 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             }
             else if(key == Qt::Key_Enter)
             {
-                if(_states1.testFlag(Character::MovingLeft))
-                {
-                    _states1 &= ~Character::HittingLeft;
-                }
-                else
-                {
-                    _states1 &= ~Character::HittingRight;
-                }
+                _states1 &= ~Character::HittingLeft;
+                _states1 &= ~Character::HittingRight;
                 emit state1(_states1);
                 return true;
             }
@@ -141,14 +160,8 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             }
             else if(key == Qt::Key_Space)
             {
-                if(_states2.testFlag(Character::MovingLeft))
-                {
-                    _states2 &= ~Character::HittingLeft;
-                }
-                else
-                {
-                    _states2 &= ~Character::HittingRight;
-                }
+                _states2 &= ~Character::HittingLeft;
+                _states2 &= ~Character::HittingRight;
                 emit state2(_states2);
                 return true;
             }

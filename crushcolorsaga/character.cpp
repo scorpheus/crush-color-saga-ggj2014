@@ -49,18 +49,7 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
 void Character::updateAnimation()
 {
-    if(_states.testFlag(HittingLeft))
-    {
-        setStates(_states & ~HittingLeft);
-    }
-    else if(_states.testFlag(HittingRight))
-    {
-        setStates(_states & ~HittingRight);
-    }
-    else
-    {
-        _animationIndex = (_animationIndex + 1) % 2;
-    }
+    _animationIndex = (_animationIndex + 1) % 2;
     update();
 }
 
@@ -72,8 +61,7 @@ void Character::setStates(States states)
         _animationIndex = 0;
         _states = states;
 
-        if(_states.testFlag(MovingLeft) || _states.testFlag(MovingRight) ||
-           _states.testFlag(HittingLeft) || _states.testFlag(HittingRight))
+        if(_states.testFlag(MovingLeft) || _states.testFlag(MovingRight))
         {
             _timerAnimation->start();
         }
