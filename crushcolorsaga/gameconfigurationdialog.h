@@ -15,10 +15,11 @@ class GameConfigurationDialog : public QDialog
         explicit GameConfigurationDialog(QWidget *parent = 0);
         ~GameConfigurationDialog();
 
-    int _id_character1;
     int _animationIndex1;
-    int _id_character2;
     int _animationIndex2;
+    static int _id_character1;
+    static int _id_character2;
+
 
     private slots:
         void updateAnimation();

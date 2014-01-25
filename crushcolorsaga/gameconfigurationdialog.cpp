@@ -3,13 +3,14 @@
 
 #include <QPainter>
 
+/*static*/ int GameConfigurationDialog::_id_character1 = 1;
+/*static*/ int GameConfigurationDialog::_id_character2 = 2;
+
 GameConfigurationDialog::GameConfigurationDialog(QWidget *parent) :
     QDialog(parent),
     _ui(new Ui::GameConfigurationDialog),
       _timerAnimation(new QTimer(this)),
-      _id_character1(1),
       _animationIndex1(0),
-      _id_character2(2),
       _animationIndex2(0)
 {
     _ui->setupUi(this);
