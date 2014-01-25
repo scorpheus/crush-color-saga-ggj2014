@@ -8,10 +8,6 @@ QT       += core gui
 QT += phonon
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
- win32:CONFIG(release, debug|release): INCLUDEPATH += C:\Users\Akkorbat\Downloads\Box2D_v2.3.0\Box2D_v2.3.0\Box2D
- win32:CONFIG(release, debug|release): LIBS += -LC:\Users\Akkorbat\Downloads\Box2D_v2.3.0\Box2D_v2.3.0\Box2D\bin\Box2D\Release
- else:win32:CONFIG(debug, debug|release): LIBS += -LC:\Users\Akkorbat\Downloads\Box2D_v2.3.0\Box2D_v2.3.0\Box2D\bin\Box2D\Debug
-
 TARGET = crushcolorsaga
 TEMPLATE = app
 LIBS += -lBox2D
