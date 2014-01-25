@@ -19,11 +19,11 @@ Level::Level(QString level_name, QObject *parent) :
 
 void Level::FinishCreateLevel ( )
 {
-    Character *character1 = new Character(1, this);
+    Character *character1 = new Character(1, this, GREEN);
     character1->moveBy(100, 100);
     addItem(character1);
 
-    Character *character2 = new Character(2, this);
+    Character *character2 = new Character(2, this, BLUE);
     character2->moveBy(132, 100);
     addItem(character2);
 

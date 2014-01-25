@@ -13,7 +13,7 @@ class Character : public QObject, public QGraphicsItem
     Q_ENUMS(State)
 
     public:
-        Character(int id, Level *level);
+        Character(int id, Level *level, ColorCharacter color);
 
         virtual QRectF boundingRect() const;
 
@@ -38,7 +38,7 @@ class Character : public QObject, public QGraphicsItem
            Stronger,
            VeryStronger,
            Surhuman
-        } ShieldState;
+        } _shieldState;
 
         int _Health;
 
@@ -54,8 +54,8 @@ class Character : public QObject, public QGraphicsItem
         QTimer *_timerAnimation;
         int _animationIndex;
         Level *_level;
-        ColorCharacter character_color;
-        ShieldState shield;
+        ColorCharacter _character_color;
+        _shieldState _shield;
 
         void CheckVulnerabilityColor();
 };
