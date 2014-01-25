@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     g_MainWindow = this;
     _ui->setupUi(this);
 
-   // GameConfigurationDialog dialog(this);
+ //   GameConfigurationDialog dialog(this);
  //   dialog.exec();
 
     ChangeLevel(choice_level_1);
@@ -35,9 +35,26 @@ void MainWindow::ChangeLevel(AllLevel level_choice)
     if(level_choice == choice_level_2)
         _level = new Level_2("level_colorstripe");
 
+    _current_level = level_choice;
+
     _level->CreateLevelPlatform();
     _level->FinishCreateLevel();
 
      _ui->graphicsView->scene()->deleteLater();
      _ui->graphicsView->setScene(_level);
+}
+
+void MainWindow::NextLevel()
+{
+    switch(_current_level)
+    {
+        case choice_level_1:
+           _current_level = choice_level_2;
+        break;
+        case choice_level_2:
+            _current_level = choice_level_1;
+        break;
+    }
+
+    ChangeLevel(_current_level);
 }
