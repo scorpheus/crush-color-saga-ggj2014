@@ -76,9 +76,12 @@ void Level::FinishCreateLevel()
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
     connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
 
-    Background *background = new MovingProjectorBackground();
-    background->setZValue(-100);
-    addItem(background);
+    _background = new MovingProjectorBackground();
+    _background->setZValue(-100);
+    addItem(_background);
+
+    connect(_background, SIGNAL(imageChanged()), character1, SLOT(CheckVulnerabilityColor()));
+    connect(_background, SIGNAL(imageChanged()), character2, SLOT(CheckVulnerabilityColor()));
 }
 
 void Level::timerEvent(QTimerEvent * event)
@@ -127,5 +130,5 @@ void Level::level_changed( const QList<QRectF> & region )
 
 QColor Level::GetBackgroundColor(QPoint pos)
 {
-    return QImage(QString(":/models/%1").arg(_level_name)).pixel(pos);
+    return _background->colorAt(pos);
 }
