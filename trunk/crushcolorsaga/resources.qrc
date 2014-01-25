@@ -6,5 +6,10 @@
         <file alias="hero1_run02">assets/spr_hero1_run02.png</file>
         <file alias="hero1_hit">assets/spr_hero1_hit01.png</file>
         <file alias="hero1_jump">assets/spr_hero1_jump01.png</file>
+        <file alias="hero2_hit">assets/spr_hero2_hit01.png</file>
+        <file alias="hero2_jump">assets/spr_hero2_jump01.png</file>
+        <file alias="hero2_run01">assets/spr_hero2_run01.png</file>
+        <file alias="hero2_run02">assets/spr_hero2_run02.png</file>
+        <file alias="hero2_standing">assets/spr_hero2_standing01.png</file>
     </qresource>
 </RCC>

@@ -16,6 +16,11 @@ Level::Level(QObject *parent) :
     character1->moveBy(100, 100);
     addItem(character1);
 
+    Character *character2 = new Character(2);
+    character2->moveBy(132, 100);
+    addItem(character2);
+
     InputManager *inputManager = new InputManager(this);
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
+    connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
 }

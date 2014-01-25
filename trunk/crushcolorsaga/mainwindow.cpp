@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->setupUi(this);
 
     _ui->graphicsView->setScene(new Level());
+    _ui->graphicsView->scale(2, 2);
 }
 
 MainWindow::~MainWindow()
