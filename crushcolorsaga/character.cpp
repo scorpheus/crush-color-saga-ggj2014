@@ -6,7 +6,7 @@
 
 Character::Character(int id) :
     _id(id),
-    _state(Idle),
+    _states(Idle),
     _timerAnimation(new QTimer(this)),
     _animationIndex(0)
 {
@@ -21,63 +21,41 @@ QRectF Character::boundingRect() const
 
 void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    switch(_state)
+    if(_states.testFlag(HittingRight))
     {
-        case Idle:
-            painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_standing").arg(_id)));
-            break;
-        case MovingRight:
-            painter->translate(32, 0);
-            painter->scale(-1, 1);
-        case MovingLeft:
-            painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1)));
-            break;
-        case HittingRight:
-            painter->translate(32, 0);
-            painter->scale(-1, 1);
-        case HittingLeft:
-            painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_hit").arg(_id)));
-            break;
+        painter->translate(32, 0);
+        painter->scale(-1, 1);
+        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_hit").arg(_id)));
     }
-}
-
-void Character::moveLeft()
-{
-    setState(MovingLeft);
-}
-
-void Character::moveRight()
-{
-    setState(MovingRight);
-}
-
-void Character::stop()
-{
-    setState(Idle);
-}
-
-void Character::jump()
-{
-
-}
-
-void Character::hit()
-{
-    if(_state == MovingLeft)
+    else if(_states.testFlag(HittingLeft))
     {
-        setState(HittingLeft);
+        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_hit").arg(_id)));
+    }
+    else if(_states.testFlag(MovingLeft))
+    {
+        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1)));
+    }
+    else if(_states.testFlag(MovingRight))
+    {
+        painter->translate(32, 0);
+        painter->scale(-1, 1);
+        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1)));
     }
     else
     {
-        setState(HittingRight);
+        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_standing").arg(_id)));
     }
 }
 
 void Character::updateAnimation()
 {
-    if(_state == HittingLeft || _state == HittingRight)
+    if(_states.testFlag(HittingLeft))
     {
-        _state = Idle;
+        setStates(_states & ~HittingLeft);
+    }
+    else if(_states.testFlag(HittingRight))
+    {
+        setStates(_states & ~HittingRight);
     }
     else
     {
@@ -86,15 +64,16 @@ void Character::updateAnimation()
     update();
 }
 
-void Character::setState(State state)
+void Character::setStates(States states)
 {
-    if(state != _state)
+    if(states != _states)
     {
         _timerAnimation->stop();
         _animationIndex = 0;
-        _state = state;
+        _states = states;
 
-        if(_state == MovingLeft || _state == MovingRight || _state == HittingLeft || _state == HittingRight)
+        if(_states.testFlag(MovingLeft) || _states.testFlag(MovingRight) ||
+           _states.testFlag(HittingLeft) || _states.testFlag(HittingRight))
         {
             _timerAnimation->start();
         }

@@ -8,6 +8,7 @@
 class Character : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_ENUMS(State)
 
     public:
         Character(int id);
@@ -16,34 +17,32 @@ class Character : public QObject, public QGraphicsItem
 
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
-    public slots:
-        void moveLeft();
-        void moveRight();
-        void stop();
-        void jump();
-        void hit();
-
-    private:
+    public:
         typedef enum
         {
-            Idle,
-            MovingLeft,
-            MovingRight,
-            HittingLeft,
-            HittingRight
+            Idle         =0x00,
+            MovingLeft   =0x01,
+            MovingRight  =0x02,
+            HittingLeft  =0x04,
+            HittingRight =0x08,
+            Jumping      =0x10
         } State;
+
+        Q_DECLARE_FLAGS(States, State);
+
+    public slots:
+        void setStates(Character::States states);
 
     private slots:
         void updateAnimation();
 
     private:
-        void setState(State state);
-
-    private:
         int _id;
-        State _state;
+        States _states;
         QTimer *_timerAnimation;
         int _animationIndex;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Character::States);
 
 #endif // CHARACTER_H
