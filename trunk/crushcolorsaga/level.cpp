@@ -5,26 +5,31 @@
 #include "inputmanager.h"
 #include "health_display.h"
 #include "gameconfigurationdialog.h"
+#include "end_level.h"
 
 #include <QPainter>
 #include <QImage>
+#include <QTimeLine>
 
 Level::Level(QString level_name, QObject *parent) :
     QGraphicsScene(parent),
-    _level_name(level_name)
+    _level_name(level_name),
+    _end_level(NULL)
 {
     setSceneRect(0, 0, 427, 341);
 
     addItem(new Contour(this));
+
+    connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
 }
 
 void Level::FinishCreateLevel ( )
 {
-    Character *character1 = new Character(GameConfigurationDialog::_id_character1, this, GREEN);
+    character1 = new Character(GameConfigurationDialog::_id_character1, this, GREEN);
     character1->moveBy(100, 100);
     addItem(character1);
 
-    Character *character2 = new Character(GameConfigurationDialog::_id_character2, this, BLUE);
+    character2 = new Character(GameConfigurationDialog::_id_character2, this, BLUE);
     character2->moveBy(132, 100);
     addItem(character2);
 
@@ -44,6 +49,33 @@ void Level::FinishCreateLevel ( )
 void Level::drawBackground ( QPainter * painter, const QRectF & rect )
 {
     painter->drawPixmap(0, 0, QPixmap(QString(":/models/%1").arg(_level_name)));
+}
+
+void Level::level_changed( const QList<QRectF> & region )
+{
+    // check if one of the character died
+    if(character1->_Health <= 0)
+    {
+        if(!_end_level)
+        {
+            _end_level = new EndLevel(this, "Player 2: YOU WON !!");
+            addItem(_end_level);
+            _end_level->timer->start();
+
+        }
+        return;
+    }
+    if(character2->_Health <= 0)
+    {
+        if(!_end_level)
+        {
+            _end_level = new EndLevel(this, "Player 1: YOU WON !!");
+            addItem(_end_level);
+            _end_level->timer->start();
+
+        }
+        return;
+    }
 }
 
 ColorCharacter Level::GetBackgroundColor(QPoint pos)
