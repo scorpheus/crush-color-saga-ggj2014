@@ -1,5 +1,6 @@
 #include "level.h"
 
+#include "movingprojectorbackground.h"
 #include "contour.h"
 #include "character.h"
 #include "inputmanager.h"
@@ -7,6 +8,7 @@
 #include "gameconfigurationdialog.h"
 #include "end_level.h"
 
+#include <QDebug>
 #include <QPainter>
 #include <QImage>
 #include <QTimeLine>
@@ -44,11 +46,11 @@ void Level::FinishCreateLevel()
     InputManager *inputManager = new InputManager(this);
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
     connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
-}
 
-void Level::drawBackground ( QPainter * painter, const QRectF & rect )
-{
-    painter->drawPixmap(0, 0, QPixmap(QString(":/models/%1").arg(_level_name)));
+    //_background = new Background(QImage(QString(":/models/%1").arg(_level_name)));
+    _background = new MovingProjectorBackground();
+    _background->setZValue(-100);
+    addItem(_background);
 }
 
 void Level::level_changed( const QList<QRectF> & region )

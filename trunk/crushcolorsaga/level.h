@@ -5,6 +5,7 @@
 
 class Character;
 class EndLevel;
+class Background;
 
 class Level : public QGraphicsScene
 {
@@ -24,13 +25,10 @@ class Level : public QGraphicsScene
         Character *character2;
 
         EndLevel* _end_level;
+        Background *_background;
 
     public slots:
         void level_changed( const QList<QRectF> & region);
-
-
-protected:
-    void drawBackground ( QPainter * painter, const QRectF & rect );
 
 private:
     QString _level_name;
