@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
    // GameConfigurationDialog dialog(this);
  //   dialog.exec();
 
-    ChangeLevel(AllLevel::choice_level_1);
+    ChangeLevel(choice_level_1);
     _ui->graphicsView->scale(2, 2);
 }
 
