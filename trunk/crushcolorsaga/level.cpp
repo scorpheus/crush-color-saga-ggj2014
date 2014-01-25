@@ -4,6 +4,7 @@
 #include "character.h"
 #include "inputmanager.h"
 #include "health_display.h"
+#include "gameconfigurationdialog.h"
 
 #include <QPainter>
 #include <QImage>
@@ -19,11 +20,11 @@ Level::Level(QString level_name, QObject *parent) :
 
 void Level::FinishCreateLevel ( )
 {
-    Character *character1 = new Character(1, this, GREEN);
+    Character *character1 = new Character(GameConfigurationDialog::_id_character1, this, GREEN);
     character1->moveBy(100, 100);
     addItem(character1);
 
-    Character *character2 = new Character(2, this, BLUE);
+    Character *character2 = new Character(GameConfigurationDialog::_id_character2, this, BLUE);
     character2->moveBy(132, 100);
     addItem(character2);
 
