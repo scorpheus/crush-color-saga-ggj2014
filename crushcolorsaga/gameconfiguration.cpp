@@ -56,8 +56,6 @@ public:  GameConfigurationChar2ArrowNext( const QPixmap & pixmap, QGraphicsItem 
     {
         setSceneRect(0, 0, 427, 341);
 
-    connect(this, SIGNAL(selectionChanged()), this, SLOT(SelectionChanged()));
-
     QGraphicsSimpleTextItem* _text_item_character_1 = addSimpleText("Personnage 1");
     _text_item_character_1->setPos(width()*0.1, height()*0.2);
 

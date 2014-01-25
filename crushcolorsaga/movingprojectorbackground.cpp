@@ -54,7 +54,7 @@ QObject *MovingProjectorBackground::createAnimation(qreal minAngle, qreal maxAng
 
 void MovingProjectorBackground::updateImage()
 {
-    if(not _imageUpdated)
+    if(! _imageUpdated)
     {
         QSize size = boundingRect().size().toSize();
         QImage image(size.width(), size.height(), QImage::Format_RGB32);

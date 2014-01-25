@@ -5,6 +5,8 @@
 
 namespace Ui { class MainWindow; }
 
+#include <Phonon/MediaObject>
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -24,9 +26,11 @@ class MainWindow : public QMainWindow
 
    public slots:
         void NextLevel();
+        void restartVideo();
 
     private:
         Ui::MainWindow *_ui;
+        Phonon::MediaObject* music;
 
     AllLevel _current_level;
 
