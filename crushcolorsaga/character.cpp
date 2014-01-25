@@ -81,7 +81,7 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 void Character::updateAnimation()
 {
     _animationIndex = (_animationIndex + 1) % 2;
-    update();
+    _level->update();
 }
 
 void Character::setStates(States states)
@@ -97,7 +97,7 @@ void Character::setStates(States states)
             _timerAnimation->start();
         }
 
-        update();
+        _level->update();
     }
 }
 
