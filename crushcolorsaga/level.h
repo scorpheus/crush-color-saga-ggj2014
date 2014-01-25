@@ -2,8 +2,8 @@
 #define LEVEL_H
 
 #include <QGraphicsScene>
-#include <Box2d\Box2D.h>
-#include <Box2d\Collision\Shapes\b2PolygonShape.h>
+#include <Box2D/Box2D.h>
+//#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
 class Character;
 class EndLevel;
