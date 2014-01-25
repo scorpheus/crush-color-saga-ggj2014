@@ -1,6 +1,7 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include <QDateTime>
 #include <QGraphicsItem>
 #include <QObject>
 #include <QTimer>
@@ -14,7 +15,7 @@ class Character : public QObject, public QGraphicsItem
     Q_ENUMS(State)
 
     public:
-        Character(int id, Level *level, ColorCharacter color);
+        Character(int id, Level *level, const QColor &color);
 
         virtual QRectF boundingRect() const;
 
@@ -39,26 +40,35 @@ class Character : public QObject, public QGraphicsItem
            Stronger,
            VeryStronger,
            Surhuman
-        } _shieldState;
+        } ShieldState;
 
         int _Health;
 
     public slots:
         void setStates(Character::States states);
 
+    protected:
+        virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
     private slots:
         void updateAnimation();
+
+        void CheckVulnerabilityColor();
+
+        void updateShield();
 
     private:
         int _id;
         States _states;
         QTimer *_timerAnimation;
+        QTimer *_timerShield;
         int _animationIndex;
+        int _particleIndex;
         Level *_level;
-        ColorCharacter _character_color;
-        _shieldState _shield;
-
-        void CheckVulnerabilityColor();
+        QColor _color;
+        QColor _surhumanShieldCurrentColor;
+        QDateTime _lastShieldUpdate;
+        ShieldState _shield;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Character::States);

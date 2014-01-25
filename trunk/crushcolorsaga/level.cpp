@@ -23,13 +23,13 @@ Level::Level(QString level_name, QObject *parent) :
     connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
 }
 
-void Level::FinishCreateLevel ( )
+void Level::FinishCreateLevel()
 {
-    character1 = new Character(GameConfigurationDialog::_id_character1, this, GREEN);
+    character1 = new Character(GameConfigurationDialog::_id_character1, this, Qt::yellow);
     character1->moveBy(100, 100);
     addItem(character1);
 
-    character2 = new Character(GameConfigurationDialog::_id_character2, this, BLUE);
+    character2 = new Character(GameConfigurationDialog::_id_character2, this, Qt::blue);
     character2->moveBy(132, 100);
     addItem(character2);
 
@@ -78,41 +78,7 @@ void Level::level_changed( const QList<QRectF> & region )
     }
 }
 
-ColorCharacter Level::GetBackgroundColor(QPoint pos)
+QColor Level::GetBackgroundColor(QPoint pos)
 {
-    QRgb _color = QImage(QString(":/models/%1").arg(_level_name)).pixel(pos);
-   if(qRed(_color) > 128)
-   {
-       if(qBlue(_color) > 128)
-       {
-           if(qGreen(_color) > 128)
-               return WHITE;
-           else
-               return PURPLE;
-       }
-       else
-       {
-           if(qGreen(_color) > 128)
-               return YELLOW;
-           else
-               return RED;
-       }
-   }
-   else
-   {
-       if(qBlue(_color) > 128)
-       {
-           if(qGreen(_color) > 128)
-               return CYAN;
-           else
-               return BLUE;
-       }
-       else
-       {
-           if(qGreen(_color) > 128)
-               return GREEN;
-           else
-               return BLACK;
-       }
-   }
+    return QImage(QString(":/models/%1").arg(_level_name)).pixel(pos);
 }

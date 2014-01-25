@@ -3,17 +3,6 @@
 
 #include <QGraphicsScene>
 
-enum ColorCharacter
-{
-    BLACK=0,
-    WHITE,
-    RED,
-    GREEN,
-    BLUE,
-    PURPLE,
-    CYAN,
-    YELLOW
-};
 class Character;
 class EndLevel;
 
@@ -24,7 +13,7 @@ class Level : public QGraphicsScene
     public:
         explicit Level(QString level_name, QObject *parent = 0);
 
-        ColorCharacter GetBackgroundColor(QPoint pos);
+        QColor GetBackgroundColor(QPoint pos);
 
 
         virtual void CreateLevelPlatform()=0;

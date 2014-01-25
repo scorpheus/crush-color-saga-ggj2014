@@ -5,18 +5,22 @@
 #include <QPainter>
 #include <QGraphicsScene>
 
-Character::Character(int id, Level *level, ColorCharacter color) :
+Character::Character(int id, Level *level, const QColor &color) :
     _id(id),
     _states(Idle),
     _timerAnimation(new QTimer(this)),
+    _timerShield(new QTimer(this)),
     _animationIndex(0),
     _level(level),
     _Health(100),
     _shield(Normal),
-    _character_color(color)
+    _color(color)
 {
     _timerAnimation->setInterval(200);
     connect(_timerAnimation, SIGNAL(timeout()), SLOT(updateAnimation()));
+    connect(_timerShield,    SIGNAL(timeout()), SLOT(updateShield()));
+
+    QTimer::singleShot(0, this, SLOT(CheckVulnerabilityColor()));
 }
 
 QRectF Character::boundingRect() const
@@ -54,34 +58,67 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
         pixmap = QPixmap(QString(":/models/hero%1_standing").arg(_id));
     }
 
-    QPixmap pixmapShield(pixmap.width(), pixmap.height());
     switch(_shield)
     {
         case Normal:
-            pixmapShield.fill(Qt::cyan);
             break;
         case Stronger:
-            pixmapShield.fill(Qt::green);
+            {
+                QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+                pixmapShield.fill(_color);
+                pixmapShield.setMask(pixmap.mask());
+                painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+            }
             break;
         case VeryStronger:
-            pixmapShield.fill(Qt::yellow);
+            {
+                QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+                pixmapShield.fill(Qt::transparent);
+                QPainter subPainter(&pixmapShield);
+                subPainter.drawPixmap(0, 0, QPixmap(QString(":/models/particle_%1").arg(_particleIndex)));
+                subPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+                subPainter.fillRect(0, 0, pixmap.width(), pixmap.height(), _color);
+                subPainter.end();
+                painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+            }
             break;
         case Surhuman:
-            pixmapShield.fill(Qt::red);
+            {
+                QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+                pixmapShield.fill(_surhumanShieldCurrentColor);
+                pixmapShield.setMask(pixmap.mask());
+                painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+            }
             break;
     }
-    pixmapShield.setMask(pixmap.mask());
 
-    painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
     painter->drawPixmap(0, 0, pixmap);
-
-    CheckVulnerabilityColor();
 }
 
 void Character::updateAnimation()
 {
     _animationIndex = (_animationIndex + 1) % 2;
     _level->update();
+}
+
+void Character::updateShield()
+{
+    if(_shield == Surhuman)
+    {
+        QDateTime now = QDateTime::currentDateTimeUtc();
+        qint64 delta = _lastShieldUpdate.msecsTo(now);
+        if(delta)
+        {
+            _surhumanShieldCurrentColor = QColor::fromHsv((_surhumanShieldCurrentColor.hue() + delta * 2) % 360, 255, 255);
+            update();
+            _lastShieldUpdate = now;
+        }
+    }
+    else if(_shield == VeryStronger)
+    {
+        _particleIndex = (_particleIndex + 1) % 6;
+        update();
+    }
 }
 
 void Character::setStates(States states)
@@ -101,30 +138,58 @@ void Character::setStates(States states)
     }
 }
 
+QVariant Character::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if(change == QGraphicsItem::ItemPositionChange)
+    {
+        CheckVulnerabilityColor();
+    }
+
+    return QGraphicsItem::itemChange(change, value);
+}
+
 void Character::CheckVulnerabilityColor()
 {
-    ColorCharacter current__character_color = _level->GetBackgroundColor(scenePos().toPoint() + QPoint(boundingRect().width(), boundingRect().height())*0.5f);
+    QColor backgroundColor = _level->GetBackgroundColor(boundingRect().translated(scenePos().toPoint()).center().toPoint());
+
+    ShieldState newShieldState;
+    int hueDifference = qAbs(backgroundColor.hue() - _color.hue()) % 360;
 
     // All color in white, so everyone got surhuman
-    if(current__character_color == WHITE)
-        _shield = Surhuman;
+    if(backgroundColor.saturation() < 10)
+        newShieldState = Surhuman;
     else    // no color so normal
-    if(current__character_color == BLACK)
-        _shield = Normal;
+    if(backgroundColor.value() < 10)
+        newShieldState = Normal;
     else    // the character is in its own color, surhuman
-    if(current__character_color == _character_color)
-        _shield = Surhuman;
+    if(hueDifference < 90)
+        newShieldState = Surhuman;
     else    // the color is one of the side of the character color, very strong
-    if((_character_color == RED && (current__character_color == YELLOW || current__character_color == PURPLE )) ||
-       (_character_color == BLUE && (current__character_color == CYAN || current__character_color == PURPLE )) ||
-       (_character_color == GREEN && (current__character_color == CYAN || current__character_color == YELLOW )))
-        _shield = VeryStronger;
+    if(hueDifference < 180)
+        newShieldState = VeryStronger;
     else    // the color is rgb, just stronger
-    if((_character_color == RED && (current__character_color == BLUE || current__character_color == GREEN )) ||
-       (_character_color == BLUE && (current__character_color == GREEN || current__character_color == RED )) ||
-       (_character_color == GREEN && (current__character_color == BLUE || current__character_color == RED )))
-        _shield = Stronger;
+    if(hueDifference < 240)
+        newShieldState = Stronger;
     else    // for the opposite color, just be normal
-        _shield = Normal;
+        newShieldState = Normal;
 
+    if(newShieldState != _shield)
+    {
+        _timerShield->stop();
+        _shield = newShieldState;
+
+        if(_shield == Surhuman)
+        {
+            _lastShieldUpdate = QDateTime::currentDateTimeUtc();
+            _surhumanShieldCurrentColor = Qt::red;
+            _timerShield->start(0);
+        }
+        else if(_shield == VeryStronger)
+        {
+            _particleIndex = 0;
+            _timerShield->start(75);
+        }
+
+        update();
+    }
 }

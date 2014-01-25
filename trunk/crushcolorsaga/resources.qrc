@@ -14,5 +14,11 @@
         <file alias="contour">assets/bg_contour01.png</file>
         <file alias="level_test">assets/level_test.png</file>
         <file alias="level_colorstripe">assets/level_colorstripe.png</file>
+        <file alias="particle_0">assets/spr_32x32_particule_blanc_1.png</file>
+        <file alias="particle_1">assets/spr_32x32_particule_blanc_2.png</file>
+        <file alias="particle_2">assets/spr_32x32_particule_blanc_3.png</file>
+        <file alias="particle_3">assets/spr_32x32_particule_blanc_4.png</file>
+        <file alias="particle_4">assets/spr_32x32_particule_blanc_5.png</file>
+        <file alias="particle_5">assets/spr_32x32_particule_blanc_7.png</file>
     </qresource>
 </RCC>
