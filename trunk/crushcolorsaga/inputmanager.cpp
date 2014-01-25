@@ -5,31 +5,90 @@
 
 
 InputManager::InputManager(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    _states1(Character::Idle)
 {
     QCoreApplication::instance()->installEventFilter(this);
 }
 
-bool InputManager::eventFilter(QObject *, QEvent *event)
+bool InputManager::eventFilter(QObject *object, QEvent *event)
 {
     if(event->type() == QEvent::KeyPress)
     {
-        Qt::Key key = Qt::Key(((QKeyEvent *)event)->key());
-        if(key == Qt::Key_Up)
+        QKeyEvent *keyEvent = (QKeyEvent *)(event);
+        if(not keyEvent->isAutoRepeat())
         {
-            emit jump1();
+            Qt::Key key = Qt::Key(keyEvent->key());
+            if(key == Qt::Key_Up)
+            {
+                _states1 |= Character::Jumping;
+                emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Left)
+            {
+                _states1 |= Character::MovingLeft;
+                emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Right)
+            {
+                _states1 |= Character::MovingRight;
+                emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Space)
+            {
+                if(_states1.testFlag(Character::MovingLeft))
+                {
+                    _states1 |= Character::HittingLeft;
+                }
+                else
+                {
+                    _states1 |= Character::HittingRight;
+                }
+                emit state1(_states1);
+                return true;
+            }
         }
-        else if(key == Qt::Key_Left)
+    }
+    else if(event->type() == QEvent::KeyRelease)
+    {
+        QKeyEvent *keyEvent = (QKeyEvent *)(event);
+        if(not keyEvent->isAutoRepeat())
         {
-            emit moveLeft1();
-        }
-        else if(key == Qt::Key_Right)
-        {
-            emit moveRight1();
-        }
-        else if(key == Qt::Key_Space)
-        {
-            emit hit1();
+            Qt::Key key = Qt::Key(keyEvent->key());
+            if(key == Qt::Key_Up)
+            {
+                _states1 &= ~Character::Jumping;
+                emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Left)
+            {
+                _states1 &= ~Character::MovingLeft;
+                emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Right)
+            {
+                _states1 &= ~Character::MovingRight;
+                emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Space)
+            {
+                if(_states1.testFlag(Character::MovingLeft))
+                {
+                    _states1 &= ~Character::HittingLeft;
+                }
+                else
+                {
+                    _states1 &= ~Character::HittingRight;
+                }
+                emit state1(_states1);
+                return true;
+            }
         }
     }
 

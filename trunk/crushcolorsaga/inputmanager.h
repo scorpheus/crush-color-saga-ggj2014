@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "character.h"
+
 class InputManager : public QObject
 {
     Q_OBJECT
@@ -13,10 +15,10 @@ class InputManager : public QObject
         virtual bool eventFilter(QObject *, QEvent *);
 
     signals:
-        void moveLeft1();
-        void moveRight1();
-        void jump1();
-        void hit1();
+        void state1(Character::States states);
+
+    private:
+        Character::States _states1;
 };
 
 #endif // INPUTMANAGER_H
