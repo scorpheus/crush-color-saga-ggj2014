@@ -16,9 +16,11 @@ class InputManager : public QObject
 
     signals:
         void state1(Character::States states);
+        void state2(Character::States states);
 
     private:
         Character::States _states1;
+        Character::States _states2;
 };
 
 #endif // INPUTMANAGER_H

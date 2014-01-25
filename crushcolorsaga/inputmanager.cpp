@@ -6,7 +6,8 @@
 
 InputManager::InputManager(QObject *parent) :
     QObject(parent),
-    _states1(Character::Idle)
+    _states1(Character::Idle),
+    _states2(Character::Idle)
 {
     QCoreApplication::instance()->installEventFilter(this);
 }
@@ -37,7 +38,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                 emit state1(_states1);
                 return true;
             }
-            else if(key == Qt::Key_Space)
+            else if(key == Qt::Key_Enter)
             {
                 if(_states1.testFlag(Character::MovingLeft))
                 {
@@ -48,6 +49,37 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                     _states1 |= Character::HittingRight;
                 }
                 emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Z)
+            {
+                _states2 |= Character::Jumping;
+                emit state2(_states2);
+                return true;
+            }
+            else if(key == Qt::Key_Q)
+            {
+                _states2 |= Character::MovingLeft;
+                emit state2(_states2);
+                return true;
+            }
+            else if(key == Qt::Key_D)
+            {
+                _states2 |= Character::MovingRight;
+                emit state2(_states2);
+                return true;
+            }
+            else if(key == Qt::Key_Space)
+            {
+                if(_states2.testFlag(Character::MovingLeft))
+                {
+                    _states2 |= Character::HittingLeft;
+                }
+                else
+                {
+                    _states2 |= Character::HittingRight;
+                }
+                emit state2(_states2);
                 return true;
             }
         }
@@ -76,7 +108,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                 emit state1(_states1);
                 return true;
             }
-            else if(key == Qt::Key_Space)
+            else if(key == Qt::Key_Enter)
             {
                 if(_states1.testFlag(Character::MovingLeft))
                 {
@@ -87,6 +119,37 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                     _states1 &= ~Character::HittingRight;
                 }
                 emit state1(_states1);
+                return true;
+            }
+            else if(key == Qt::Key_Z)
+            {
+                _states2 &= ~Character::Jumping;
+                emit state2(_states2);
+                return true;
+            }
+            else if(key == Qt::Key_Q)
+            {
+                _states2 &= ~Character::MovingLeft;
+                emit state2(_states2);
+                return true;
+            }
+            else if(key == Qt::Key_D)
+            {
+                _states2 &= ~Character::MovingRight;
+                emit state2(_states2);
+                return true;
+            }
+            else if(key == Qt::Key_Space)
+            {
+                if(_states2.testFlag(Character::MovingLeft))
+                {
+                    _states2 &= ~Character::HittingLeft;
+                }
+                else
+                {
+                    _states2 &= ~Character::HittingRight;
+                }
+                emit state2(_states2);
                 return true;
             }
         }
