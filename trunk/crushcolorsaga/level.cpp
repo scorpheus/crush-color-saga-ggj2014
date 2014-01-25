@@ -75,12 +75,14 @@ void Level::FinishCreateLevel()
     InputManager *inputManager = new InputManager(this);
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
     connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
+
+    Background *background = new MovingProjectorBackground();
+    background->setZValue(-100);
+    addItem(background);
 }
 
 void Level::timerEvent(QTimerEvent * event)
 {
-    QElapsedTimer timer;
-    timer.start();
     world->Step(B2_TIMESTEP, B2_VELOCITY_ITERATIONS, B2_POSITION_ITERATIONS);
 
     // Update QGraphicsItem's position and rotation from body.
@@ -94,7 +96,6 @@ void Level::timerEvent(QTimerEvent * event)
     world->ClearForces();
     // this is new!!
     world->DrawDebugData();
-    qDebug() << timer.elapsed();
 }
 
 void Level::level_changed( const QList<QRectF> & region )
