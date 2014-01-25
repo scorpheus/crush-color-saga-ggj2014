@@ -2,9 +2,12 @@
 #define CHARACTER_H
 
 #include <QGraphicsItem>
+#include <QObject>
 
-class Character : public QGraphicsItem
+class Character : public QObject, public QGraphicsItem
 {
+    Q_OBJECT
+
     public:
         Character(int id);
 
@@ -20,7 +23,17 @@ class Character : public QGraphicsItem
         void hit();
 
     private:
+        typedef enum
+        {
+            Idle,
+            MovingLeft,
+            MovingRight,
+            Hitting
+        } State;
+
+    private:
         int _id;
+        State _state;
 };
 
 #endif // CHARACTER_H
