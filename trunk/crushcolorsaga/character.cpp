@@ -14,6 +14,10 @@ Character::Character(int id, Level *level, ColorCharacter color) :
     _shield(Normal),
     _character_color(color)
 {
+    _visual_shield = new QGraphicsRectItem(boundingRect());
+    _level->addItem(_visual_shield);
+    _visual_shield->setBrush(Qt::cyan);
+
     _timerAnimation->setInterval(200);
     connect(_timerAnimation, SIGNAL(timeout()), SLOT(updateAnimation()));
 }
@@ -54,6 +58,8 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     }
 
     CheckVulnerabilityColor();
+    UpdateVisualShield();
+    _visual_shield->setPos(pos());
 }
 
 void Character::updateAnimation()
@@ -81,7 +87,7 @@ void Character::setStates(States states)
 
 void Character::CheckVulnerabilityColor()
 {
-    ColorCharacter current__character_color = _level->GetBackgroundColor(scenePos().toPoint());
+    ColorCharacter current__character_color = _level->GetBackgroundColor(scenePos().toPoint() + QPoint(boundingRect().width(), boundingRect().height())*0.5f);
 
     // All color in white, so everyone got surhuman
     if(current__character_color == WHITE)
@@ -104,4 +110,25 @@ void Character::CheckVulnerabilityColor()
         _shield = Stronger;
     else    // for the opposite color, just be normal
         _shield = Normal;
+
+}
+
+void Character::UpdateVisualShield()
+{
+    switch(_shield)
+    {
+    case Normal:
+        _visual_shield->setBrush(Qt::cyan);
+        break;
+    case Stronger:
+        _visual_shield->setBrush(Qt::green);
+        break;
+    case VeryStronger:
+        _visual_shield->setBrush(Qt::yellow);
+        break;
+    case Surhuman:
+        _visual_shield->setBrush(Qt::red);
+        break;
+    }
+
 }
