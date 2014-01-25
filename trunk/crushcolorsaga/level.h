@@ -24,6 +24,9 @@ class Level : public QGraphicsScene
 
         ColorCharacter GetBackgroundColor(QPoint pos);
 
+        virtual void CreateLevelPlatform()=0;
+        virtual void FinishCreateLevel();
+
 protected:
     void drawBackground ( QPainter * painter, const QRectF & rect );
 
