@@ -8,15 +8,16 @@
 #include "gameconfiguration.h"
 #include "end_level.h"
 
+#include <QElapsedTimer>
 #include <QDebug>
 #include <QPainter>
 #include <QImage>
 #include <QTimeLine>
 #include <QDebug>
 
-const int B2_TIMESTEP = 1/60;
-const int B2_VELOCITY_ITERATIONS = 6;
-const int B2_POSITION_ITERATIONS = 2;
+const qreal B2_TIMESTEP = 1/60.0;
+const qint32 B2_VELOCITY_ITERATIONS = 6;
+const qint32 B2_POSITION_ITERATIONS = 2;
 
 Level::Level(QString level_name, QObject *parent) :
     QGraphicsScene(parent),
@@ -24,18 +25,11 @@ Level::Level(QString level_name, QObject *parent) :
     _end_level(NULL)
 {
     setSceneRect(0, 0, 427, 341);
-    if(startTimer(0) == 0)
-    {
-        qDebug() << "Timer pas démarré !";
-    }
+    startTimer(0);
 
     addItem(new Contour(this));
 
- /*   b2AABB worldAABB;
-    worldAABB.lowerBound.Set(-200, -100);
-    worldAABB.upperBound.Set(200, 500);*/
-    world = new b2World(
-      /* gravity = */ b2Vec2(0.0f, 100.0f));
+    world = new b2World(b2Vec2(0.0f, -10.0f));
 
     connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
 }
@@ -66,11 +60,8 @@ void Level::FinishCreateLevel()
     b2FixtureDef fixtureDef;
 
     fixtureDef.shape = &dynamicBox;
-
-    fixtureDef.density = 1.0f;
-
+    fixtureDef.density = 0.1f;
     fixtureDef.friction = 0.3f;
-
     body->CreateFixture(&fixtureDef);// was body.CreateShape(boxDef);
 
     HealthDisplay *health1 = new HealthDisplay(character1);
@@ -88,6 +79,8 @@ void Level::FinishCreateLevel()
 
 void Level::timerEvent(QTimerEvent * event)
 {
+    QElapsedTimer timer;
+    timer.start();
     world->Step(B2_TIMESTEP, B2_VELOCITY_ITERATIONS, B2_POSITION_ITERATIONS);
 
     // Update QGraphicsItem's position and rotation from body.
@@ -95,21 +88,13 @@ void Level::timerEvent(QTimerEvent * event)
     float32 angle = body->GetAngle();
     character1->setPos(position.x, -position.y);
     character1->setRotation(-(angle * 360.0) / (2 * 3.14));
-    qDebug() << character1->boundingRect();
+    //qDebug() << character1->pos();
 
     // this is new!
     world->ClearForces();
     // this is new!!
     world->DrawDebugData();
-}
-
-void Level::drawBackground ( QPainter * painter, const QRectF & rect )
-{
-    painter->drawPixmap(0, 0, QPixmap(QString(":/models/%1").arg(_level_name)));
-    //_background = new Background(QImage(QString(":/models/%1").arg(_level_name)));
-    _background = new MovingProjectorBackground();
-    _background->setZValue(-100);
-    addItem(_background);
+    qDebug() << timer.elapsed();
 }
 
 void Level::level_changed( const QList<QRectF> & region )
