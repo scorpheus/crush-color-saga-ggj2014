@@ -31,30 +31,28 @@ class GameConfigurationChar1ArrowNext : public QGraphicsPixmapItem
 public:  GameConfigurationChar1ArrowNext( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
     protected:
         virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ ++GameConfiguration::_id_character1; if(GameConfiguration::_id_character1>GameConfiguration::nb_character) GameConfiguration::_id_character1 = 1; }
-};
+    class GameConfigurationChar2ArrowPrev : public QGraphicsPixmapItem
+    {
+    public:  GameConfigurationChar2ArrowPrev( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+        protected:
+            virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ --GameConfiguration::_id_character2; if(GameConfiguration::_id_character2<1) GameConfiguration::_id_character2 = GameConfiguration::nb_character; }
+    };
 
-class GameConfigurationChar2ArrowPrev : public QGraphicsPixmapItem
-{
-public:  GameConfigurationChar2ArrowPrev( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
-    protected:
-        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ --GameConfiguration::_id_character2; if(GameConfiguration::_id_character2<1) GameConfiguration::_id_character2 = GameConfiguration::nb_character; }
-};
-
-class GameConfigurationChar2ArrowNext : public QGraphicsPixmapItem
-{
-public:  GameConfigurationChar2ArrowNext( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
-    protected:
-        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ ++GameConfiguration::_id_character2; if(GameConfiguration::_id_character2>GameConfiguration::nb_character) GameConfiguration::_id_character2 = 1; }
-};
+    class GameConfigurationChar2ArrowNext : public QGraphicsPixmapItem
+    {
+    public:  GameConfigurationChar2ArrowNext( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+        protected:
+            virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ ++GameConfiguration::_id_character2; if(GameConfiguration::_id_character2>GameConfiguration::nb_character) GameConfiguration::_id_character2 = 1; }
+    };
 
 
-GameConfiguration::GameConfiguration(QObject *parent) :
-    QGraphicsScene(parent),
-    _timerAnimation(new QTimer(this)),
-    _animationIndex1(0),
-    _animationIndex2(0)
-{
-    setSceneRect(0, 0, 427, 341);
+    GameConfiguration::GameConfiguration(QObject *parent) :
+        QGraphicsScene(parent),
+        _timerAnimation(new QTimer(this)),
+        _animationIndex1(0),
+        _animationIndex2(0)
+    {
+        setSceneRect(0, 0, 427, 341);
 
     connect(this, SIGNAL(selectionChanged()), this, SLOT(SelectionChanged()));
 
@@ -87,6 +85,7 @@ GameConfiguration::GameConfiguration(QObject *parent) :
     connect(_timerAnimation, SIGNAL(timeout()), this, SLOT(updateAnimation()));
     _timerAnimation->start();
 
+    QGraphicsSimpleTextItem* _text_item_validate = new GameConfigurationValidate("Valider");
     QGraphicsSimpleTextItem* _text_item_validate = new GameConfigurationValidate("Valider");
     addItem(_text_item_validate);
     _text_item_validate->setScale(2.0);
