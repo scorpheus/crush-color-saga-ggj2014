@@ -17,15 +17,19 @@ bool InputManager::eventFilter(QObject *, QEvent *event)
         Qt::Key key = Qt::Key(((QKeyEvent *)event)->key());
         if(key == Qt::Key_Up)
         {
-
+            emit jump1();
         }
         else if(key == Qt::Key_Left)
         {
-
+            emit moveLeft1();
         }
         else if(key == Qt::Key_Right)
         {
-
+            emit moveRight1();
+        }
+        else if(key == Qt::Key_Space)
+        {
+            emit hit1();
         }
     }
 
