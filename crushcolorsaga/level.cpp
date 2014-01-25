@@ -38,11 +38,11 @@ b2Body* body;
 
 void Level::FinishCreateLevel()
 {
-    character1 = new Character(GameConfiguration::_id_character1, this, Qt::yellow);
+    character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
     character1->moveBy(100, 100);
     addItem(character1);
 
-    character2 = new Character(GameConfiguration::_id_character2, this, Qt::blue);
+    character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
     character2->moveBy(132, 100);
     addItem(character2);
 

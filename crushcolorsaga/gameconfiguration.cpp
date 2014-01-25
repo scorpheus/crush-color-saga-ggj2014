@@ -12,6 +12,9 @@ extern MainWindow* g_MainWindow;
 /*static*/ int GameConfiguration::_id_character1 = 1;
 /*static*/ int GameConfiguration::_id_character2 = 2;
 
+/*static*/ QColor GameConfiguration::_color_character1 = Qt::red;
+/*static*/ QColor GameConfiguration::_color_character2 = Qt::blue;
+
 class GameConfigurationValidate : public QGraphicsSimpleTextItem
 {
 public:  GameConfigurationValidate( const QString & text, QGraphicsItem * parent = 0 ) : QGraphicsSimpleTextItem(text, parent){};
@@ -47,61 +50,136 @@ public:  GameConfigurationChar2ArrowNext( const QPixmap & pixmap, QGraphicsItem 
         virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ ++GameConfiguration::_id_character2; if(GameConfiguration::_id_character2>GameConfiguration::nb_character) GameConfiguration::_id_character2 = 1; }
 };
 
+//*****************************************************************************************************************
 
-    GameConfiguration::GameConfiguration(QObject *parent) :
-        QGraphicsScene(parent),
-        _timerAnimation(new QTimer(this)),
-        _animationIndex1(0),
-        _animationIndex2(0)
-    {
+QColor FindNextColor(QColor color)
+{
+    const QColor _array_color[] = {Qt::red, Qt::green, Qt::blue};
+    for(int i=0; i< 3; ++i)
+        if(_array_color[i] == color)
+        {
+            if(i >= 2)
+                return _array_color[0];
+            else
+                return _array_color[i+1];
+        }
+    return _array_color[0];
+}
+QColor FindPreviousColor(QColor color)
+{
+    const QColor _array_color[] = {Qt::red, Qt::green, Qt::blue};
+    for(int i=0; i< 3; ++i)
+        if(_array_color[i] == color)
+        {
+            if(i <= 0)
+                return _array_color[2];
+            else
+                return _array_color[i-1];
+        }
+    return _array_color[0];
+}
+
+class GameConfigurationChar1ColorArrowPrev : public QGraphicsPixmapItem
+{
+public:  GameConfigurationChar1ColorArrowPrev( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+    protected:
+        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ GameConfiguration::_color_character1 = FindPreviousColor(GameConfiguration::_color_character1);  }
+};
+
+class GameConfigurationChar1ColorArrowNext : public QGraphicsPixmapItem
+{
+public:  GameConfigurationChar1ColorArrowNext( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+    protected:
+    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ GameConfiguration::_color_character1 = FindNextColor(GameConfiguration::_color_character1); }
+};
+
+class GameConfigurationChar2ColorArrowPrev : public QGraphicsPixmapItem
+{
+public:  GameConfigurationChar2ColorArrowPrev( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+    protected:
+        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ GameConfiguration::_color_character2 = FindPreviousColor(GameConfiguration::_color_character2);  }
+};
+
+class GameConfigurationChar2ColorArrowNext : public QGraphicsPixmapItem
+{
+public:  GameConfigurationChar2ColorArrowNext( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+    protected:
+        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ GameConfiguration::_color_character2 = FindNextColor(GameConfiguration::_color_character2); }
+};
+
+
+GameConfiguration::GameConfiguration(QObject *parent) :
+    QGraphicsScene(parent),
+    _timerAnimation(new QTimer(this)),
+    _animationIndex1(0),
+    _animationIndex2(0)
+{
         setSceneRect(0, 0, 427, 341);
-
-    QGraphicsSimpleTextItem* _text_item_character_1 = addSimpleText("Personnage 1");
-    _text_item_character_1->setPos(width()*0.1, height()*0.2);
-
-    QGraphicsSimpleTextItem* _text_item_character_2 = addSimpleText("Personnage 2");
-    _text_item_character_2->setPos(width()*0.1, height()*0.3);
 
     GameConfigurationChar1ArrowPrev* _pixmap_item_character_1_arrow_left = new GameConfigurationChar1ArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
     addItem(_pixmap_item_character_1_arrow_left);
-    _pixmap_item_character_1_arrow_left->setPos(width()*0.4, height()*0.2);
+    _pixmap_item_character_1_arrow_left->setPos(72, 189);
     GameConfigurationChar2ArrowPrev* _pixmap_item_character_2_arrow_left = new GameConfigurationChar2ArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
     addItem(_pixmap_item_character_2_arrow_left);
-    _pixmap_item_character_2_arrow_left->setPos(width()*0.4, height()*0.3);
+    _pixmap_item_character_2_arrow_left->setPos(297, 189);
 
     GameConfigurationChar1ArrowNext* _pixmap_item_character_1_arrow_right = new GameConfigurationChar1ArrowNext(QPixmap(QString(":/models/select_arrow_right")));
     addItem(_pixmap_item_character_1_arrow_right);
-    _pixmap_item_character_1_arrow_right->setPos(width()*0.7, height()*0.2);
+    _pixmap_item_character_1_arrow_right->setPos(113, 189);
     GameConfigurationChar2ArrowNext* _pixmap_item_character_2_arrow_right = new GameConfigurationChar2ArrowNext(QPixmap(QString(":/models/select_arrow_right")));
     addItem(_pixmap_item_character_2_arrow_right);
-    _pixmap_item_character_2_arrow_right->setPos(width()*0.7, height()*0.3);
+    _pixmap_item_character_2_arrow_right->setPos(338, 189);
 
-    _pixmap_item_character_1 = addPixmap(QPixmap(QString(":/models/hero%1_run0%2").arg(_id_character1).arg(_animationIndex1+1)));
-    _pixmap_item_character_1->setPos(width()*0.55, height()*0.17);
-    _pixmap_item_character_2 = addPixmap(QPixmap(QString(":/models/hero%1_run0%2").arg(_id_character2).arg(_animationIndex2+1)));
-    _pixmap_item_character_2->setPos(width()*0.55, height()*0.27);
+    //*****************************************************************
+
+    GameConfigurationChar1ColorArrowPrev* _pixmap_item_character_1_color_arrow_left = new GameConfigurationChar1ColorArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
+    addItem(_pixmap_item_character_1_color_arrow_left);
+    _pixmap_item_character_1_color_arrow_left->setPos(72, 234);
+    GameConfigurationChar2ColorArrowPrev* _pixmap_item_character_2_color_arrow_left = new GameConfigurationChar2ColorArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
+    addItem(_pixmap_item_character_2_color_arrow_left);
+    _pixmap_item_character_2_color_arrow_left->setPos(297, 234);
+
+    GameConfigurationChar1ColorArrowNext* _pixmap_item_character_1_color_arrow_right = new GameConfigurationChar1ColorArrowNext(QPixmap(QString(":/models/select_arrow_right")));
+    addItem(_pixmap_item_character_1_color_arrow_right);
+    _pixmap_item_character_1_color_arrow_right->setPos(113, 234);
+    GameConfigurationChar2ColorArrowNext* _pixmap_item_character_2_color_arrow_right = new GameConfigurationChar2ColorArrowNext(QPixmap(QString(":/models/select_arrow_right")));
+    addItem(_pixmap_item_character_2_color_arrow_right);
+    _pixmap_item_character_2_color_arrow_right->setPos(338, 234);
+
+
+
+    _pixmap_item_character_1 = addPixmap(QPixmap(QString(":/models/portait_char_%1").arg(_id_character1)));
+    _pixmap_item_character_1->setPos(88, 185);
+    _pixmap_item_character_2 = addPixmap(QPixmap(QString(":/models/portait_char_%1").arg(_id_character2)));
+    _pixmap_item_character_2->setPos(313, 185);
+
+    _pixmap_color_character_1 = addRect( 88, 230, 24, 24, QPen(Qt::NoPen), QBrush (_color_character1));
+    _pixmap_color_character_2 = addRect( 313, 230, 24, 24, QPen(Qt::NoPen), QBrush (_color_character2));
 
     _timerAnimation->setInterval(200);
     connect(_timerAnimation, SIGNAL(timeout()), this, SLOT(updateAnimation()));
     _timerAnimation->start();
 
     QGraphicsSimpleTextItem* _text_item_validate = new GameConfigurationValidate("Valider");
+    _text_item_validate->setBrush(QColor(255,255,0,200));
+    _text_item_validate->setPen(QPen(Qt::black));
     addItem(_text_item_validate);
-    _text_item_validate->setScale(2.0);
+    _text_item_validate->setScale(3.0);
     QRectF validate_rect = _text_item_validate->boundingRect();
-    _text_item_validate->setPos(width()*0.5 - validate_rect.width()*0.5, height()*0.7-validate_rect.height());
+    _text_item_validate->setPos(width()*0.45 - validate_rect.width()*0.6, height()*0.7-validate_rect.height());
 }
 
 void GameConfiguration::drawBackground ( QPainter * painter, const QRectF & rect )
 {
-    painter->drawPixmap(0, 0, QPixmap(QString(":/models/%1").arg("_GameConfiguration_name")));
+    painter->drawPixmap(0, 0, QPixmap(QString(":/models/%1").arg("bg_menu")));
 }
 
 void GameConfiguration::updateAnimation()
 {
-    _animationIndex1 = (_animationIndex1 + 1) % 2;
-    _animationIndex2 = (_animationIndex2 + 1) % 2;
+    _pixmap_item_character_1->setPixmap(QPixmap(QString(":/models/portait_char_%1").arg(_id_character1)));
+    _pixmap_item_character_2->setPixmap(QPixmap(QString(":/models/portait_char_%1").arg(_id_character2)));
 
-    _pixmap_item_character_1->setPixmap(QPixmap(QString(":/models/hero%1_run0%2").arg(_id_character1).arg(_animationIndex1+1)));
-    _pixmap_item_character_2->setPixmap(QPixmap(QString(":/models/hero%1_run0%2").arg(_id_character2).arg(_animationIndex2+1)));
+    _pixmap_color_character_1->setBrush(QBrush (_color_character1));
+    _pixmap_color_character_2->setBrush(QBrush (_color_character2));
+
 }

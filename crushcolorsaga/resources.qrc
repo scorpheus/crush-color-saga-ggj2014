@@ -23,5 +23,8 @@
         <file alias="select_arrow_left">assets/select_arrow_left.png</file>
         <file alias="select_arrow_right">assets/select_arrow_right.png</file>
         <file alias="background_sound">assets/baston.wav</file>
+        <file alias="bg_menu">assets/bg_menu.png</file>
+        <file alias="portait_char_1">assets/spr_portrait_hero1.png</file>
+        <file alias="portait_char_2">assets/spr_portrait_hero2.png</file>
     </qresource>
 </RCC>

@@ -15,6 +15,9 @@ class GameConfiguration : public QGraphicsScene
     static int _id_character1;
     static int _id_character2;
 
+    static QColor _color_character1;
+    static QColor _color_character2;
+
     static const int nb_character = 2;
 protected:
     void drawBackground ( QPainter * painter, const QRectF & rect );
@@ -22,6 +25,9 @@ protected:
 private:
     QGraphicsPixmapItem* _pixmap_item_character_1;
     QGraphicsPixmapItem* _pixmap_item_character_2;
+
+    QGraphicsRectItem* _pixmap_color_character_1;
+    QGraphicsRectItem* _pixmap_color_character_2;
 
 private slots:
     void updateAnimation();
