@@ -2,7 +2,6 @@
 
 #include "platform.h"
 
-
 void Level_2::CreateLevelPlatform ( )
 {
     addItem(new Platform(QPoint(144,55), 10));
