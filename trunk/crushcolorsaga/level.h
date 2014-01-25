@@ -22,23 +22,24 @@ class Level : public QGraphicsScene
         virtual void CreateLevelPlatform()=0;
         virtual void FinishCreateLevel();
 
-private:
-        Character *character1;
-        Character *character2;
-
-        EndLevel* _end_level;
-        Background *_background;
-
-    public slots:
-        void level_changed( const QList<QRectF> & region);
-
-protected:
-    virtual void timerEvent(QTimerEvent *event);
-    b2World*  world;
+    private:
+            Character *character1;
+            Character *character2;
+            EndLevel* _end_level;
+            Background *_background;
+            QString _level_name;
+            QList<QPair<b2Body *, QGraphicsItem *> > _bodies;
 
 private:
+            QPointF physicalToGraphical(const b2Vec2 &point);
+            b2Vec2 graphicalToPhysical(const QPointF &point);
 
-    QString _level_name;
+        public slots:
+            void level_changed( const QList<QRectF> & region);
+
+    protected:
+        virtual void timerEvent(QTimerEvent *event);
+        b2World*  _world;
 };
 
 #endif // LEVEL_H

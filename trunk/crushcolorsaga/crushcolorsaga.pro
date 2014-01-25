@@ -1,11 +1,10 @@
-#-------------------------------------------------
+#------------------------------------------------
 #
 # Project created by QtCreator 2014-01-24T23:48:42
 #
 #-------------------------------------------------
 
-QT       += core gui
-QT += phonon
+QT += core gui network xml phonon
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = crushcolorsaga

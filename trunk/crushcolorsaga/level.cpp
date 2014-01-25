@@ -1,12 +1,14 @@
 #include "level.h"
 
 #include "movingprojectorbackground.h"
+#include "wikimediaimagebackground.h"
 #include "contour.h"
 #include "character.h"
 #include "inputmanager.h"
 #include "health_display.h"
 #include "gameconfiguration.h"
 #include "end_level.h"
+#include "platform.h"
 
 #include <QElapsedTimer>
 #include <QDebug>
@@ -18,103 +20,83 @@
 const qreal B2_TIMESTEP = 1/60.0;
 const qint32 B2_VELOCITY_ITERATIONS = 6;
 const qint32 B2_POSITION_ITERATIONS = 2;
+const qreal SCALE = 50.0;
 
 Level::Level(QString level_name, QObject *parent) :
     QGraphicsScene(parent),
     _level_name(level_name),
-    _end_level(NULL)
+    _end_level(NULL),
+    _bodies()
 {
     setSceneRect(0, 0, 427, 341);
     startTimer(0);
 
     addItem(new Contour(this));
 
-    world = new b2World(b2Vec2(0.0f, -1.0f));
-    world->SetAllowSleeping(false);
+    _world = new b2World(b2Vec2(0.0f, -0.1f));
+    _world->SetAllowSleeping(false);
     connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
 }
 
-b2Body* body;
-
 void Level::FinishCreateLevel()
 {
+    // Register platform physics
+    foreach(QGraphicsItem *item, items())
+    {
+        if(item->type() == QGraphicsItem::UserType + 100)
+        {
+            Platform *platform = (Platform *)item;
+
+            b2BodyDef bodyDefPlatform;
+            QPointF center = platform->boundingRect().translated(platform->pos()).center();
+            bodyDefPlatform.position = graphicalToPhysical(center);
+            b2Body* bodyPlatform = _world->CreateBody(&bodyDefPlatform);
+            b2PolygonShape boxPlatform;
+            boxPlatform.SetAsBox(platform->boundingRect().width() / (2.0 * SCALE),
+                                 platform->boundingRect().height() / (2.0 * SCALE));
+            bodyPlatform->CreateFixture(&boxPlatform, 0.0f);
+        }
+    }
+
+    // Register charachter 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
-    character1->moveBy(100, 100);
     addItem(character1);
 
+    b2BodyDef bodyDefChar1;
+    bodyDefChar1.type = b2_dynamicBody;
+    bodyDefChar1.position = graphicalToPhysical(QPointF(70.0f, 10.0f));
+    b2Body *bodyChar1 = _world->CreateBody(&bodyDefChar1);
+
+    b2PolygonShape dynamicBoxChar1;
+    dynamicBoxChar1.SetAsBox(32.0f / (2 * SCALE), 32.0f / (2 * SCALE));
+
+    b2FixtureDef fixtureDefChar1;
+    fixtureDefChar1.shape = &dynamicBoxChar1;
+    fixtureDefChar1.density = 10.0f;
+    fixtureDefChar1.friction = 0.3f;
+    bodyChar1->CreateFixture(&fixtureDefChar1);
+
+    _bodies << qMakePair(bodyChar1, (QGraphicsItem *)(character1));
+
+    // Register charachter 1
     character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
-    character2->moveBy(132, 100);
     addItem(character2);
 
-    b2BodyDef bodyDef;
+    b2BodyDef bodyDefChar2;
+    bodyDefChar2.type = b2_dynamicBody;
+    bodyDefChar2.position = graphicalToPhysical(QPointF(220.0f, 10.0f));
+    b2Body *bodyChar2 = _world->CreateBody(&bodyDefChar2);
 
-    bodyDef.type = b2_dynamicBody;
+    b2PolygonShape dynamicBoxChar2;
+    dynamicBoxChar2.SetAsBox(32.0f / (2 * SCALE), 32.0f / (2 * SCALE));
 
-    bodyDef.position.Set(100.0f, 10.0f);
-    body = world->CreateBody(&bodyDef);
+    b2FixtureDef fixtureDefChar2;
+    fixtureDefChar2.shape = &dynamicBoxChar2;
+    fixtureDefChar2.density = 10.0f;
+    fixtureDefChar2.friction = 0.3f;
+    bodyChar2->CreateFixture(&fixtureDefChar2);
 
-    b2PolygonShape dynamicBox;
-
-    dynamicBox.SetAsBox(32.0f, 32.0f);
-
-    b2FixtureDef fixtureDef;
-
-    fixtureDef.shape = &dynamicBox;
-
-    fixtureDef.density = 10.0f;
-
-    fixtureDef.friction = 0.3f;
-    body->CreateFixture(&fixtureDef);// was body.CreateShape(boxDef);
-
-    b2BodyDef groundBodyDef;
-
-    /*Premier niveau à gauche*/
-    groundBodyDef.position.Set(90.0f, -342.0f+character1->boundingRect().height()/2);
-    b2Body* groundBody = world->CreateBody(&groundBodyDef);
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f);
-    groundBody->CreateFixture(&groundBox, 0.0f);
-
-    /*Dernier niveau à gauche*/
-    b2BodyDef groundBodyDef2;
-    groundBodyDef2.position.Set(90.0f, -62.0f);
-    b2Body* groundBody2 = world->CreateBody(&groundBodyDef2);
-    b2PolygonShape groundBox2;
-    groundBox2.SetAsBox(50.0f, 10.0f);
-    groundBody2->CreateFixture(&groundBox2, 0.0f);
-
-    /*Premier niveau à droite*/
-    b2BodyDef groundBodyDef3;
-    groundBodyDef3.position.Set(264.0f, -62.0f);
-    b2Body* groundBody3 = world->CreateBody(&groundBodyDef3);
-    b2PolygonShape groundBox3;
-    groundBox3.SetAsBox(50.0f, 10.0f);
-    groundBody3->CreateFixture(&groundBox3, 0.0f);
-
-    /*Dernier niveau à droite*/
-    b2BodyDef groundBodyDef4;
-    groundBodyDef4.position.Set(264.0f, -342.0f+character1->boundingRect().height()/2);
-    b2Body* groundBody4 = world->CreateBody(&groundBodyDef4);
-    b2PolygonShape groundBox4;
-    groundBox4.SetAsBox(50.0f, 10.0f);
-    groundBody4->CreateFixture(&groundBox4, 0.0f);
-
-    /*Deuxième niveau à gauche*/
-    b2BodyDef groundBodyDef5;
-    groundBodyDef5.position.Set(8.0f, -120.0f);
-    b2Body* groundBody5 = world->CreateBody(&groundBodyDef5);
-    b2PolygonShape groundBox5;
-    groundBox5.SetAsBox(50.0f, 10.0f);
-    groundBody5->CreateFixture(&groundBox5, 0.0f);
-
-    /*Quatrième niveau à gauche*/
-    b2BodyDef groundBodyDef6;
-    groundBodyDef6.position.Set(8.0f, -250.0f+character1->boundingRect().height()/2);
-    b2Body* groundBody6 = world->CreateBody(&groundBodyDef6);
-    b2PolygonShape groundBox6;
-    groundBox6.SetAsBox(50.0f, 10.0f);
-    groundBody6->CreateFixture(&groundBox6, 0.0f);
-
+    _bodies << qMakePair(bodyChar2, (QGraphicsItem *)(character2));
 
     HealthDisplay *health1 = new HealthDisplay(character1);
     addItem(health1);
@@ -129,6 +111,7 @@ void Level::FinishCreateLevel()
     connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
 
     _background = new Background(); //MovingProjectorBackground();
+    //_background = new WikimediaImageBackground();
     _background->setZValue(-100);
     addItem(_background);
 
@@ -136,21 +119,31 @@ void Level::FinishCreateLevel()
     connect(_background, SIGNAL(imageChanged()), character2, SLOT(CheckVulnerabilityColor()));
 }
 
+QPointF Level::physicalToGraphical(const b2Vec2 &point)
+{
+    return QPointF(point.x * SCALE, height() - (point.y * SCALE));
+}
+
+b2Vec2 Level::graphicalToPhysical(const QPointF &point)
+{
+    return b2Vec2(point.x() / SCALE, (height() - point.y()) / SCALE);
+}
+
 void Level::timerEvent(QTimerEvent * event)
 {
-    world->Step(B2_TIMESTEP, B2_VELOCITY_ITERATIONS, B2_POSITION_ITERATIONS);
+    _world->Step(B2_TIMESTEP, B2_VELOCITY_ITERATIONS, B2_POSITION_ITERATIONS);
 
-    // Update QGraphicsItem's position and rotation from body.
-    b2Vec2 position = body->GetPosition();
-    float32 angle = body->GetAngle();
-    character1->setPos(position.x, -position.y);
-    character1->setRotation(-(angle * 360.0) / (2 * 3.14));
-    //qDebug() << character1->pos();
+    for(int i=0 ; i<_bodies.count() ; i++)
+    {
+        b2Vec2 position = _bodies[i].first->GetPosition();
+        float32 angle = _bodies[i].first->GetAngle();
+        QSizeF boundingSize = _bodies[i].second->boundingRect().size();
+        _bodies[i].second->setPos(physicalToGraphical(position) - QPointF(boundingSize.width()/2, boundingSize.height()/2));
+        _bodies[i].second->setRotation(-(angle * 360.0) / (2 * 3.14));
+    }
 
-    // this is new!
-    world->ClearForces();
-    // this is new!!
-    world->DrawDebugData();
+    _world->ClearForces();
+    _world->DrawDebugData();
 }
 
 void Level::level_changed( const QList<QRectF> & region )

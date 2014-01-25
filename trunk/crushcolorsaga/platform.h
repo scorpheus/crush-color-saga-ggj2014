@@ -6,14 +6,16 @@
 class Platform : public QGraphicsItem
 {
     public:
-        Platform(QPoint start, int width);
+        Platform(int width);
 
         virtual QRectF boundingRect() const;
 
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+        inline virtual int type() const
+        { return UserType + 100; }
+
     private:
-        QPoint _start;
         int _width;
 };
 

@@ -18,20 +18,20 @@ MovingProjectorBackground::MovingProjectorBackground() :
     projector.frustum = 60;
     projector.color = Qt::red;
     projector.angle = -45;
-    projector.animation = createAnimation(-70, -20, 2000);
+    projector.animation = createAnimation(-70, -20, 4000);
     _projectors << projector;
 
     projector.position = QPoint(boundingRect().width() / 2, 0);
     projector.frustum = 60;
     projector.color = Qt::green;
-    projector.animation = createAnimation(-125, -55, 4000);
+    projector.animation = createAnimation(-125, -55, 8000);
     projector.angle = -90;
     _projectors << projector;
 
     projector.position = QPoint(boundingRect().width(), 0);
     projector.frustum = 60;
     projector.color = Qt::blue;
-    projector.animation = createAnimation(-160, -110, 3200);
+    projector.animation = createAnimation(-160, -110, 6400);
     projector.angle = -135;
     _projectors << projector;
 
