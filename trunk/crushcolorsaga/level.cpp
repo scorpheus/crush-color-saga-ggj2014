@@ -5,7 +5,7 @@
 #include "character.h"
 #include "inputmanager.h"
 #include "health_display.h"
-#include "gameconfigurationdialog.h"
+#include "gameconfiguration.h"
 #include "end_level.h"
 
 #include <QDebug>
@@ -27,11 +27,11 @@ Level::Level(QString level_name, QObject *parent) :
 
 void Level::FinishCreateLevel()
 {
-    character1 = new Character(GameConfigurationDialog::_id_character1, this, Qt::yellow);
+    character1 = new Character(GameConfiguration::_id_character1, this, Qt::yellow);
     character1->moveBy(100, 100);
     addItem(character1);
 
-    character2 = new Character(GameConfigurationDialog::_id_character2, this, Qt::blue);
+    character2 = new Character(GameConfiguration::_id_character2, this, Qt::blue);
     character2->moveBy(132, 100);
     addItem(character2);
 
