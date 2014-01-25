@@ -12,15 +12,12 @@ class MovingProjectorBackground : public Background
     public:
         explicit MovingProjectorBackground();
 
-    protected:
-        virtual void timerEvent(QTimerEvent *);
-
     private:
-        void updateImage();
-
         QObject *createAnimation(qreal minAngle, qreal maxAngle, int duration);
 
     private slots:
+        void updateImage();
+
         void updateProjectorAngle(const QVariant &angle);
 
         void onAnimationFinished();
@@ -38,6 +35,7 @@ class MovingProjectorBackground : public Background
     private:
         QDateTime _start;
         QList<Projector> _projectors;
+        bool _imageUpdated;
 };
 
 #endif // MOVINGPROJECTORBACKGROUND_H

@@ -1,14 +1,17 @@
 #include "movingprojectorbackground.h"
 
+#include <QElapsedTimer>
 #include <QDebug>
 #include <QPainter>
+#include <QTimer>
 
 #include "simplevariantanimation.h"
 
 
 MovingProjectorBackground::MovingProjectorBackground() :
     Background(),
-    _start(QDateTime::currentDateTimeUtc())
+    _start(QDateTime::currentDateTimeUtc()),
+    _imageUpdated(false)
 {
     Projector projector;
     projector.position = QPoint(0, 0);
@@ -49,35 +52,35 @@ QObject *MovingProjectorBackground::createAnimation(qreal minAngle, qreal maxAng
     return animation;
 }
 
-void MovingProjectorBackground::timerEvent(QTimerEvent *)
-{
-    updateImage();
-}
-
 void MovingProjectorBackground::updateImage()
 {
-    QSize size = boundingRect().size().toSize();
-    QImage image(size.width(), size.height(), QImage::Format_RGB32);
-    image.fill(Qt::black);
-
-    QPainter painter(&image);
-    painter.setPen(Qt::NoPen);
-    painter.setCompositionMode(QPainter::CompositionMode_Plus);
-
-    foreach(const Projector &projector, _projectors)
+    if(not _imageUpdated)
     {
-        painter.save();
-        painter.setBrush(projector.color);
-        painter.translate(projector.position);
-        painter.drawPie(-800, -800, 1600, 1600,
-                        (projector.angle - projector.frustum / 2) * 16,
-                        projector.frustum * 16);
-        painter.restore();
+        QSize size = boundingRect().size().toSize();
+        QImage image(size.width(), size.height(), QImage::Format_RGB32);
+        image.fill(Qt::black);
+
+        QPainter painter(&image);
+        painter.setPen(Qt::NoPen);
+        painter.setCompositionMode(QPainter::CompositionMode_Plus);
+
+        foreach(const Projector &projector, _projectors)
+        {
+            painter.save();
+            painter.setBrush(projector.color);
+            painter.translate(projector.position);
+            painter.drawPie(-600, -600, 1200, 1200,
+                            (projector.angle - projector.frustum / 2) * 16,
+                            projector.frustum * 16);
+            painter.restore();
+        }
+
+        painter.end();
+
+        setImage(image);
+
+        _imageUpdated = true;
     }
-
-    painter.end();
-
-    setImage(image);
 }
 
 void MovingProjectorBackground::updateProjectorAngle(const QVariant &angle)
@@ -89,7 +92,8 @@ void MovingProjectorBackground::updateProjectorAngle(const QVariant &angle)
             Projector newProjector = _projectors[i];
             newProjector.angle = angle.toReal();
             _projectors[i] = newProjector;
-            updateImage();
+            _imageUpdated = false;
+            QTimer::singleShot(0, this, SLOT(updateImage()));
             break;
         }
     }
