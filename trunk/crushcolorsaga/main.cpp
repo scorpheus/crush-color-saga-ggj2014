@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include <Box2d/Box2D.h>
 #include <QApplication>
 
 int main(int argc, char *argv[])
