@@ -17,7 +17,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
     if(event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = (QKeyEvent *)(event);
-        if(not keyEvent->isAutoRepeat())
+        if(! keyEvent->isAutoRepeat())
         {
             Qt::Key key = Qt::Key(keyEvent->key());
             if(key == Qt::Key_Up)
@@ -87,7 +87,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
     else if(event->type() == QEvent::KeyRelease)
     {
         QKeyEvent *keyEvent = (QKeyEvent *)(event);
-        if(not keyEvent->isAutoRepeat())
+        if(! keyEvent->isAutoRepeat())
         {
             Qt::Key key = Qt::Key(keyEvent->key());
             if(key == Qt::Key_Up)
