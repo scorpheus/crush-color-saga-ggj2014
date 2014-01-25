@@ -58,10 +58,7 @@ class Character : public QObject, public QGraphicsItem
         ColorCharacter _character_color;
         _shieldState _shield;
 
-        QGraphicsRectItem* _visual_shield;
-
         void CheckVulnerabilityColor();
-        void UpdateVisualShield();
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Character::States);

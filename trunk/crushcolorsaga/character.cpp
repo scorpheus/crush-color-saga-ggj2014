@@ -1,5 +1,6 @@
 #include "character.h"
 
+#include <QBitmap>
 #include <QDebug>
 #include <QPainter>
 #include <QGraphicsScene>
@@ -14,52 +15,67 @@ Character::Character(int id, Level *level, ColorCharacter color) :
     _shield(Normal),
     _character_color(color)
 {
-    _visual_shield = new QGraphicsRectItem(boundingRect());
-    _level->addItem(_visual_shield);
-    _visual_shield->setBrush(Qt::cyan);
-
     _timerAnimation->setInterval(200);
     connect(_timerAnimation, SIGNAL(timeout()), SLOT(updateAnimation()));
 }
 
 QRectF Character::boundingRect() const
 {
-    return QRectF(0, 0, 32, 32);
+    return QRectF(0, 0, 36, 36);
 }
 
 void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    QPixmap pixmap;
+    painter->translate(2, 2);
+
     if(_states.testFlag(HittingRight))
     {
         painter->translate(32, 0);
         painter->scale(-1, 1);
-        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_hit").arg(_id)));
+        pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
     }
     else if(_states.testFlag(HittingLeft))
     {
-        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_hit").arg(_id)));
+        pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
     }
     else if(_states.testFlag(MovingLeft))
     {
-        moveBy(-2, 0);
-        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1)));
+        pixmap = QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1));
     }
     else if(_states.testFlag(MovingRight))
     {
-        moveBy(2, 0);
-
         painter->translate(32, 0);
         painter->scale(-1, 1);
-        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1)));
+        pixmap =QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1));
     }
     else
     {
-        painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_standing").arg(_id)));
+        pixmap = QPixmap(QString(":/models/hero%1_standing").arg(_id));
     }
 
+    QPixmap pixmapShield(pixmap.width(), pixmap.height());
+    switch(_shield)
+    {
+        case Normal:
+            pixmapShield.fill(Qt::cyan);
+            break;
+        case Stronger:
+            pixmapShield.fill(Qt::green);
+            break;
+        case VeryStronger:
+            pixmapShield.fill(Qt::yellow);
+            break;
+        case Surhuman:
+            pixmapShield.fill(Qt::red);
+            break;
+    }
+    pixmapShield.setMask(pixmap.mask());
+
+    painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+    painter->drawPixmap(0, 0, pixmap);
+
     CheckVulnerabilityColor();
-    UpdateVisualShield();
-    _visual_shield->setPos(pos());
 }
 
 void Character::updateAnimation()
@@ -110,25 +126,5 @@ void Character::CheckVulnerabilityColor()
         _shield = Stronger;
     else    // for the opposite color, just be normal
         _shield = Normal;
-
-}
-
-void Character::UpdateVisualShield()
-{
-    switch(_shield)
-    {
-    case Normal:
-        _visual_shield->setBrush(Qt::cyan);
-        break;
-    case Stronger:
-        _visual_shield->setBrush(Qt::green);
-        break;
-    case VeryStronger:
-        _visual_shield->setBrush(Qt::yellow);
-        break;
-    case Surhuman:
-        _visual_shield->setBrush(Qt::red);
-        break;
-    }
 
 }
