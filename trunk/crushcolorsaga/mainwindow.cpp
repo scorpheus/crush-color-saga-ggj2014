@@ -5,6 +5,7 @@
 #include "level_1.h"
 #include "level_2.h"
 
+
 MainWindow* g_MainWindow;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,11 +21,20 @@ MainWindow::MainWindow(QWidget *parent) :
      _ui->graphicsView->setScene(_game_configuration);
 
     _ui->graphicsView->scale(2, 2);
+
+    music = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/background_sound"));
+    connect(music, SIGNAL(aboutToFinish()), this, SLOT(restartVideo()));
+    music->play();
 }
 
 MainWindow::~MainWindow()
 {
     delete _ui;
+}
+
+void MainWindow::restartVideo()
+{
+    music->enqueue(Phonon::MediaSource(QString(":/models/background_sound")));
 }
 
 void MainWindow::ChangeLevel(AllLevel level_choice)

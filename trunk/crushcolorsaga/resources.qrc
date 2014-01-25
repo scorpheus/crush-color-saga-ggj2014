@@ -22,5 +22,6 @@
         <file alias="particle_5">assets/spr_32x32_particule_blanc_7.png</file>
         <file alias="select_arrow_left">assets/select_arrow_left.png</file>
         <file alias="select_arrow_right">assets/select_arrow_right.png</file>
+        <file alias="background_sound">assets/baston.wav</file>
     </qresource>
 </RCC>
