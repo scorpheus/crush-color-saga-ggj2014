@@ -17,12 +17,18 @@ class MainWindow : public QMainWindow
     {
        choice_level_1 = 0,
        choice_level_2,
+       nb_choice_level
     };
 
     void ChangeLevel(AllLevel level_choice);
 
+   public slots:
+        void NextLevel();
+
     private:
         Ui::MainWindow *_ui;
+
+    AllLevel _current_level;
 
     public slots:
 };
