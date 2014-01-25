@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     level_1.cpp \
     health_display.cpp \
     level_2.cpp \
-    end_level.cpp
+    end_level.cpp \
+    movingprojectorbackground.cpp \
+    simplevariantanimation.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
@@ -37,7 +39,9 @@ HEADERS  += mainwindow.h \
     level_1.h \
     health_display.h \
     level_2.h \
-    end_level.h
+    end_level.h \
+    movingprojectorbackground.h \
+    simplevariantanimation.h
 
 FORMS    += mainwindow.ui \
     gameconfigurationdialog.ui
