@@ -1,9 +1,9 @@
 #include "level.h"
 
 #include "contour.h"
-#include "platform.h"
 #include "character.h"
 #include "inputmanager.h"
+#include "health_display.h"
 
 #include <QPainter>
 #include <QImage>
@@ -15,15 +15,20 @@ Level::Level(QString level_name, QObject *parent) :
     setSceneRect(0, 0, 427, 341);
 
     addItem(new Contour(this));
-    addItem(new Platform(QPoint(0, 341-16), 27));
+}
 
-    Character *character1 = new Character(1);
+void Level::FinishCreateLevel ( )
+{
+    Character *character1 = new Character(1, this);
     character1->moveBy(100, 100);
     addItem(character1);
 
-    Character *character2 = new Character(2);
+    Character *character2 = new Character(2, this);
     character2->moveBy(132, 100);
     addItem(character2);
+
+    addItem(new HealthDisplay(QPoint(9,18), character1));
+    addItem(new HealthDisplay(QPoint(9,29), character2));
 
     InputManager *inputManager = new InputManager(this);
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
@@ -38,7 +43,6 @@ void Level::drawBackground ( QPainter * painter, const QRectF & rect )
 ColorCharacter Level::GetBackgroundColor(QPoint pos)
 {
     QRgb _color = QImage(QString(":/models/%1").arg(_level_name)).pixel(pos);
-
    if(qRed(_color) > 128)
    {
        if(qBlue(_color) > 128)

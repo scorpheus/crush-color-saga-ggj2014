@@ -5,13 +5,15 @@
 #include <QObject>
 #include <QTimer>
 
+#include "level.h"
+
 class Character : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     Q_ENUMS(State)
 
     public:
-        Character(int id);
+        Character(int id, Level *level);
 
         virtual QRectF boundingRect() const;
 
@@ -30,6 +32,16 @@ class Character : public QObject, public QGraphicsItem
 
         Q_DECLARE_FLAGS(States, State);
 
+        typedef enum
+        {
+           Normal = 0,
+           Stronger,
+           VeryStronger,
+           Surhuman
+        } ShieldState;
+
+        int _Health;
+
     public slots:
         void setStates(Character::States states);
 
@@ -41,6 +53,11 @@ class Character : public QObject, public QGraphicsItem
         States _states;
         QTimer *_timerAnimation;
         int _animationIndex;
+        Level *_level;
+        ColorCharacter character_color;
+        ShieldState shield;
+
+        void CheckVulnerabilityColor();
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Character::States);

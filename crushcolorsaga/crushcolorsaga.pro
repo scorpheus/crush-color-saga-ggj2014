@@ -20,7 +20,10 @@ SOURCES += main.cpp\
     inputmanager.cpp \
     gameconfigurationdialog.cpp \
     background.cpp \
-    contour.cpp
+    contour.cpp \
+    level_1.cpp \
+    health_display.cpp \
+    level_2.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
@@ -29,7 +32,10 @@ HEADERS  += mainwindow.h \
     inputmanager.h \
     gameconfigurationdialog.h \
     background.h \
-    contour.h
+    contour.h \
+    level_1.h \
+    health_display.h \
+    level_2.h
 
 FORMS    += mainwindow.ui \
     gameconfigurationdialog.ui

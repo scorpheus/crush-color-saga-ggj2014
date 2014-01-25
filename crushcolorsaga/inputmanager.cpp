@@ -3,6 +3,8 @@
 #include <QCoreApplication>
 #include <QKeyEvent>
 
+#include "mainwindow.h"
+extern MainWindow* g_MainWindow;
 
 InputManager::InputManager(QObject *parent) :
     QObject(parent),
@@ -105,6 +107,11 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                 }
                 emit state2(_states2);
                 _timerStopHit2->start();
+                return true;
+            }            
+            else if(key == Qt::Key_N)
+            {
+                g_MainWindow->ChangeLevel(MainWindow::choice_level_2);
                 return true;
             }
         }
