@@ -28,8 +28,13 @@ void Level::FinishCreateLevel ( )
     character2->moveBy(132, 100);
     addItem(character2);
 
-    addItem(new HealthDisplay(QPoint(9,18), character1));
-    addItem(new HealthDisplay(QPoint(9,29), character2));
+    HealthDisplay *health1 = new HealthDisplay(character1);
+    addItem(health1);
+    health1->moveBy(15, 15);
+
+    HealthDisplay *health2 = new HealthDisplay(character2);
+    addItem(health2);
+    health2->moveBy(312, 15);
 
     InputManager *inputManager = new InputManager(this);
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
