@@ -5,9 +5,12 @@
 #include "character.h"
 #include "inputmanager.h"
 
+#include <QPainter>
+#include <QImage>
 
-Level::Level(QObject *parent) :
-    QGraphicsScene(parent)
+Level::Level(QString level_name, QObject *parent) :
+    QGraphicsScene(parent),
+    _level_name(level_name)
 {
     setSceneRect(0, 0, 427, 341);
 
@@ -25,4 +28,49 @@ Level::Level(QObject *parent) :
     InputManager *inputManager = new InputManager(this);
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
     connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
+}
+
+void Level::drawBackground ( QPainter * painter, const QRectF & rect )
+{
+    painter->drawPixmap(0, 0, QPixmap(QString(":/models/%1").arg(_level_name)));
+}
+
+ColorCharacter Level::GetBackgroundColor(QPoint pos)
+{
+    QRgb _color = QImage(QString(":/models/%1").arg(_level_name)).pixel(pos);
+
+   if(qRed(_color) > 128)
+   {
+       if(qBlue(_color) > 128)
+       {
+           if(qGreen(_color) > 128)
+               return WHITE;
+           else
+               return PURPLE;
+       }
+       else
+       {
+           if(qGreen(_color) > 128)
+               return YELLOW;
+           else
+               return RED;
+       }
+   }
+   else
+   {
+       if(qBlue(_color) > 128)
+       {
+           if(qGreen(_color) > 128)
+               return CYAN;
+           else
+               return BLUE;
+       }
+       else
+       {
+           if(qGreen(_color) > 128)
+               return GREEN;
+           else
+               return BLACK;
+       }
+   }
 }

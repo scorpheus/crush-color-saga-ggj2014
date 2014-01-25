@@ -12,5 +12,6 @@
         <file alias="hero2_run02">assets/spr_hero2_run02.png</file>
         <file alias="hero2_standing">assets/spr_hero2_standing01.png</file>
         <file alias="contour">assets/bg_contour01.png</file>
+        <file alias="level_test">assets/level_test.png</file>
     </qresource>
 </RCC>

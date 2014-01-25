@@ -10,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _ui->setupUi(this);
 
-    GameConfigurationDialog dialog(this);
-    dialog.exec();
+   // GameConfigurationDialog dialog(this);
+ //   dialog.exec();
 
-    _ui->graphicsView->setScene(new Level());
+    _ui->graphicsView->setScene(new Level("level_test"));
     _ui->graphicsView->scale(2, 2);
 }
 
