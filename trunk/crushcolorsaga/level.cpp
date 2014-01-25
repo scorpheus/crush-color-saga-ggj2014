@@ -20,4 +20,5 @@ Level::Level(QObject *parent) :
     connect(inputManager, SIGNAL(jump1()),      character1, SLOT(jump()));
     connect(inputManager, SIGNAL(moveLeft1()),  character1, SLOT(moveLeft()));
     connect(inputManager, SIGNAL(moveRight1()), character1, SLOT(moveRight()));
+    connect(inputManager, SIGNAL(hit1()),       character1, SLOT(hit()));
 }

@@ -13,9 +13,10 @@ class InputManager : public QObject
         virtual bool eventFilter(QObject *, QEvent *);
 
     signals:
-        void moveLeft();
-        void moveRight();
-        void jump();
+        void moveLeft1();
+        void moveRight1();
+        void jump1();
+        void hit1();
 };
 
 #endif // INPUTMANAGER_H

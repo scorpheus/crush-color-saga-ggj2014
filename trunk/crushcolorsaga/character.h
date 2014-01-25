@@ -29,7 +29,8 @@ class Character : public QObject, public QGraphicsItem
             Idle,
             MovingLeft,
             MovingRight,
-            Hitting
+            HittingLeft,
+            HittingRight
         } State;
 
     private slots:
