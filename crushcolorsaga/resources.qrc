@@ -2,5 +2,7 @@
     <qresource prefix="/models">
         <file alias="bloc">assets/bg_bloc01.png</file>
         <file alias="hero1_standing">assets/spr_hero1_standing01.png</file>
+        <file alias="hero1_run01">assets/spr_hero1_run01.png</file>
+        <file alias="hero1_run02">assets/spr_hero1_run02.png</file>
     </qresource>
 </RCC>

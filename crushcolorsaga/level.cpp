@@ -13,6 +13,7 @@ Level::Level(QObject *parent) :
     addItem(new Platform(QPoint(0, 341-16), 27));
 
     Character *character1 = new Character(1);
+    character1->moveBy(100, 100);
     addItem(character1);
 
     InputManager *inputManager = new InputManager(this);
