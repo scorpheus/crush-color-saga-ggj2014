@@ -35,7 +35,6 @@ private:
         void level_changed( const QList<QRectF> & region);
 
 protected:
-    void drawBackground ( QPainter * painter, const QRectF & rect );
     virtual void timerEvent(QTimerEvent *event);
 
 private:
