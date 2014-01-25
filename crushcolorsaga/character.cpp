@@ -4,13 +4,15 @@
 #include <QPainter>
 #include <QGraphicsScene>
 
-Character::Character(int id, Level *level) :
+Character::Character(int id, Level *level, ColorCharacter color) :
     _id(id),
     _states(Idle),
     _timerAnimation(new QTimer(this)),
     _animationIndex(0),
     _level(level),
-    _Health(100)
+    _Health(100),
+    _shield(Normal),
+    _character_color(color)
 {
     _timerAnimation->setInterval(200);
     connect(_timerAnimation, SIGNAL(timeout()), SLOT(updateAnimation()));
@@ -35,10 +37,13 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     }
     else if(_states.testFlag(MovingLeft))
     {
+        moveBy(-2, 0);
         painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1)));
     }
     else if(_states.testFlag(MovingRight))
     {
+        moveBy(2, 0);
+
         painter->translate(32, 0);
         painter->scale(-1, 1);
         painter->drawPixmap(0, 0, QPixmap(QString(":/models/hero%1_run0%2").arg(_id).arg(_animationIndex+1)));
@@ -76,27 +81,27 @@ void Character::setStates(States states)
 
 void Character::CheckVulnerabilityColor()
 {
-    ColorCharacter current_character_color = _level->GetBackgroundColor(scenePos().toPoint());
+    ColorCharacter current__character_color = _level->GetBackgroundColor(scenePos().toPoint());
 
     // All color in white, so everyone got surhuman
-    if(current_character_color == WHITE)
-        shield = Surhuman;
+    if(current__character_color == WHITE)
+        _shield = Surhuman;
     else    // no color so normal
-    if(current_character_color == BLACK)
-        shield = Normal;
+    if(current__character_color == BLACK)
+        _shield = Normal;
     else    // the character is in its own color, surhuman
-    if(current_character_color == character_color)
-        shield = Surhuman;
+    if(current__character_color == _character_color)
+        _shield = Surhuman;
     else    // the color is one of the side of the character color, very strong
-    if((character_color == RED && (current_character_color == YELLOW || current_character_color == PURPLE )) ||
-       (character_color == BLUE && (current_character_color == CYAN || current_character_color == PURPLE )) ||
-       (character_color == GREEN && (current_character_color == CYAN || current_character_color == YELLOW )))
-        shield = VeryStronger;
+    if((_character_color == RED && (current__character_color == YELLOW || current__character_color == PURPLE )) ||
+       (_character_color == BLUE && (current__character_color == CYAN || current__character_color == PURPLE )) ||
+       (_character_color == GREEN && (current__character_color == CYAN || current__character_color == YELLOW )))
+        _shield = VeryStronger;
     else    // the color is rgb, just stronger
-    if((character_color == RED && (current_character_color == BLUE || current_character_color == GREEN )) ||
-       (character_color == BLUE && (current_character_color == GREEN || current_character_color == RED )) ||
-       (character_color == GREEN && (current_character_color == BLUE || current_character_color == RED )))
-        shield = Stronger;
+    if((_character_color == RED && (current__character_color == BLUE || current__character_color == GREEN )) ||
+       (_character_color == BLUE && (current__character_color == GREEN || current__character_color == RED )) ||
+       (_character_color == GREEN && (current__character_color == BLUE || current__character_color == RED )))
+        _shield = Stronger;
     else    // for the opposite color, just be normal
-        shield = Normal;
+        _shield = Normal;
 }
