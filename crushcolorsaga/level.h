@@ -29,13 +29,12 @@ private:
         EndLevel* _end_level;
         Background *_background;
 
-        b2World*  world;
-
     public slots:
         void level_changed( const QList<QRectF> & region);
 
 protected:
     virtual void timerEvent(QTimerEvent *event);
+    b2World*  world;
 
 private:
 

@@ -29,8 +29,8 @@ Level::Level(QString level_name, QObject *parent) :
 
     addItem(new Contour(this));
 
-    world = new b2World(b2Vec2(0.0f, -10.0f));
-
+    world = new b2World(b2Vec2(0.0f, -1.0f));
+    world->SetAllowSleeping(false);
     connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
 }
 
@@ -50,19 +50,71 @@ void Level::FinishCreateLevel()
 
     bodyDef.type = b2_dynamicBody;
 
-    bodyDef.position.Set(0.0f, 4.0f);
+    bodyDef.position.Set(100.0f, 10.0f);
     body = world->CreateBody(&bodyDef);
 
     b2PolygonShape dynamicBox;
 
-    dynamicBox.SetAsBox(8.0f, 8.0f);
+    dynamicBox.SetAsBox(32.0f, 32.0f);
 
     b2FixtureDef fixtureDef;
 
     fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 0.1f;
+
+    fixtureDef.density = 10.0f;
+
     fixtureDef.friction = 0.3f;
     body->CreateFixture(&fixtureDef);// was body.CreateShape(boxDef);
+
+    b2BodyDef groundBodyDef;
+
+    /*Premier niveau à gauche*/
+    groundBodyDef.position.Set(90.0f, -342.0f+character1->boundingRect().height()/2);
+    b2Body* groundBody = world->CreateBody(&groundBodyDef);
+    b2PolygonShape groundBox;
+    groundBox.SetAsBox(50.0f, 10.0f);
+    groundBody->CreateFixture(&groundBox, 0.0f);
+
+    /*Dernier niveau à gauche*/
+    b2BodyDef groundBodyDef2;
+    groundBodyDef2.position.Set(90.0f, -62.0f);
+    b2Body* groundBody2 = world->CreateBody(&groundBodyDef2);
+    b2PolygonShape groundBox2;
+    groundBox2.SetAsBox(50.0f, 10.0f);
+    groundBody2->CreateFixture(&groundBox2, 0.0f);
+
+    /*Premier niveau à droite*/
+    b2BodyDef groundBodyDef3;
+    groundBodyDef3.position.Set(264.0f, -62.0f);
+    b2Body* groundBody3 = world->CreateBody(&groundBodyDef3);
+    b2PolygonShape groundBox3;
+    groundBox3.SetAsBox(50.0f, 10.0f);
+    groundBody3->CreateFixture(&groundBox3, 0.0f);
+
+    /*Dernier niveau à droite*/
+    b2BodyDef groundBodyDef4;
+    groundBodyDef4.position.Set(264.0f, -342.0f+character1->boundingRect().height()/2);
+    b2Body* groundBody4 = world->CreateBody(&groundBodyDef4);
+    b2PolygonShape groundBox4;
+    groundBox4.SetAsBox(50.0f, 10.0f);
+    groundBody4->CreateFixture(&groundBox4, 0.0f);
+
+    /*Deuxième niveau à gauche*/
+    b2BodyDef groundBodyDef5;
+    groundBodyDef5.position.Set(8.0f, -120.0f);
+    b2Body* groundBody5 = world->CreateBody(&groundBodyDef5);
+    b2PolygonShape groundBox5;
+    groundBox5.SetAsBox(50.0f, 10.0f);
+    groundBody5->CreateFixture(&groundBox5, 0.0f);
+
+    /*Quatrième niveau à gauche*/
+    b2BodyDef groundBodyDef6;
+    groundBodyDef6.position.Set(8.0f, -250.0f+character1->boundingRect().height()/2);
+    b2Body* groundBody6 = world->CreateBody(&groundBodyDef6);
+    b2PolygonShape groundBox6;
+    groundBox6.SetAsBox(50.0f, 10.0f);
+    groundBody6->CreateFixture(&groundBox6, 0.0f);
+
 
     HealthDisplay *health1 = new HealthDisplay(character1);
     addItem(health1);
@@ -76,7 +128,7 @@ void Level::FinishCreateLevel()
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
     connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
 
-    _background = new MovingProjectorBackground();
+    _background = new Background(); //MovingProjectorBackground();
     _background->setZValue(-100);
     addItem(_background);
 
