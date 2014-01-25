@@ -3,6 +3,9 @@
 #include <QCoreApplication>
 #include <QKeyEvent>
 
+#include "mainwindow.h"
+extern MainWindow* g_MainWindow;
+
 InputManager::InputManager(QObject *parent) :
     QObject(parent),
     _states1(Character::Idle),
@@ -164,6 +167,10 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
                 emit state2(_states2);
                 return true;
             }
+      /*      else if(key == Qt::Key_N)
+            {
+                g_MainWindow->NextLevel();
+            }*/
         }
     }
 

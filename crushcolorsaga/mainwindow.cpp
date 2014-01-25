@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "gameconfigurationdialog.h"
+#include "gameconfiguration.h"
 
 #include "level_1.h"
 #include "level_2.h"
@@ -14,10 +14,11 @@ MainWindow::MainWindow(QWidget *parent) :
     g_MainWindow = this;
     _ui->setupUi(this);
 
- //   GameConfigurationDialog dialog(this);
- //   dialog.exec();
+    GameConfiguration* _game_configuration = new GameConfiguration();
 
-    ChangeLevel(choice_level_1);
+     _ui->graphicsView->scene()->deleteLater();
+     _ui->graphicsView->setScene(_game_configuration);
+
     _ui->graphicsView->scale(2, 2);
 }
 

@@ -18,7 +18,6 @@ SOURCES += main.cpp\
     level.cpp \
     platform.cpp \
     inputmanager.cpp \
-    gameconfigurationdialog.cpp \
     background.cpp \
     contour.cpp \
     level_1.cpp \
@@ -26,14 +25,14 @@ SOURCES += main.cpp\
     level_2.cpp \
     end_level.cpp \
     movingprojectorbackground.cpp \
-    simplevariantanimation.cpp
+    simplevariantanimation.cpp \
+    gameconfiguration.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
     level.h \
     platform.h \
     inputmanager.h \
-    gameconfigurationdialog.h \
     background.h \
     contour.h \
     level_1.h \
@@ -41,10 +40,10 @@ HEADERS  += mainwindow.h \
     level_2.h \
     end_level.h \
     movingprojectorbackground.h \
-    simplevariantanimation.h
+    simplevariantanimation.h \
+    gameconfiguration.h
 
-FORMS    += mainwindow.ui \
-    gameconfigurationdialog.ui
+FORMS    += mainwindow.ui
 
 RESOURCES += \
     resources.qrc
