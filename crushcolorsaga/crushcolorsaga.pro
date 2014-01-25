@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     platform.cpp \
     inputmanager.cpp \
     gameconfigurationdialog.cpp \
-    background.cpp
+    background.cpp \
+    contour.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
     platform.h \
     inputmanager.h \
     gameconfigurationdialog.h \
-    background.h
+    background.h \
+    contour.h
 
 FORMS    += mainwindow.ui \
     gameconfigurationdialog.ui

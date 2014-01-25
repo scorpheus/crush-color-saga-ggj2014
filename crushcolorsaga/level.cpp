@@ -1,5 +1,6 @@
 #include "level.h"
 
+#include "contour.h"
 #include "platform.h"
 #include "character.h"
 #include "inputmanager.h"
@@ -10,6 +11,7 @@ Level::Level(QObject *parent) :
 {
     setSceneRect(0, 0, 427, 341);
 
+    addItem(new Contour(this));
     addItem(new Platform(QPoint(0, 341-16), 27));
 
     Character *character1 = new Character(1);
