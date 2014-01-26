@@ -1,4 +1,4 @@
-#include "MovingProjectorBackground_Level3.h"
+#include "movingprojectorbackground_level3.h"
 
 #include <QElapsedTimer>
 #include <QDebug>
