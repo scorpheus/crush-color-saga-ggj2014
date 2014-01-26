@@ -18,7 +18,8 @@ Character::Character(int id, Level *level, const QColor &color) :
     _level(level),
     _Health(100),
     _shield(Normal),
-    _color(color)
+    _color(color),
+    _lastDirectionLeft(false)
 {
     _timerAnimation->setInterval(200);
     connect(_timerAnimation,   SIGNAL(timeout()), SLOT(updateAnimation()));
@@ -204,6 +205,15 @@ void Character::setStates(States states)
         update();
 
         emit statesChanged(_states ^ oldStates);
+
+        if(_states.testFlag(MovingRight))
+        {
+            _lastDirectionLeft = false;
+        }
+        if(_states.testFlag(MovingLeft))
+        {
+            _lastDirectionLeft = true;
+        }
     }
 }
 
