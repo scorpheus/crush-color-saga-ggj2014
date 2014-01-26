@@ -38,7 +38,7 @@
         <file alias="snd_explosion">assets/snd_explosionboulettedef.wav</file>
         <file alias="snd_jump">assets/snd_sautdef.wav</file>
         <file alias="snd_shoot">assets/snd_tirdef.wav</file>
-		<file alias="particle_7">assets/spr_32x32_particule_blanc_8.png</file>
+        <file alias="particle_7">assets/spr_32x32_particule_blanc_8.png</file>
         <file alias="particle_8">assets/spr_32x32_particule_blanc_9.png</file>
         <file alias="particle_9">assets/spr_32x32_particule_blanc_10.png</file>
         <file alias="particle_10">assets/spr_32x32_particule_blanc_11.png</file>
@@ -50,9 +50,9 @@
         <file alias="bigboom_4">assets/spr_bigboom_noir_5.png</file>
         <file alias="bigboom_5">assets/spr_bigboom_noir_6.png</file>
         <file alias="bigboom_6">assets/spr_bigboom_noir_7.png</file>
+
         <file alias="hero1_bubblejump">assets/spr_hero1_bouboulejump02.png</file>
         <file alias="hero2_bubblejump">assets/spr_hero2_bouboulejump01.png</file>
         <file alias="hit_taken">assets/snd_coupprisdef.wav</file>
-        <file alias="bg_level_3">assets/bg_fondlevel.png</file>
-    </qresource>
+        <file alias="bg_level_3">assets/bg_fondlevel.png</file>    </qresource>
 </RCC>

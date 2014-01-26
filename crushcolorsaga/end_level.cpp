@@ -26,6 +26,7 @@ EndLevel::EndLevel(QGraphicsScene *parent, QString end_text) :
         animation->setShearAt (i / 600.0,0,0);
 
     timer->connect(timer, SIGNAL(finished()), g_MainWindow, SLOT(NextLevel()));
+
 }
 
 QRectF EndLevel::boundingRect() const
