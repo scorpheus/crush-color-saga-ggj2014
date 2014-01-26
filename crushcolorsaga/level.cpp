@@ -90,6 +90,7 @@ void Level::FinishCreateLevel()
     // Register character 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
     connect(character1, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
+    connect(character1, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged()));
     addItem(character1);
 
     b2BodyDef bodyDefChar1;
@@ -100,19 +101,24 @@ void Level::FinishCreateLevel()
     b2Body *bodyChar1 = _world->CreateBody(&bodyDefChar1);
 
     b2PolygonShape dynamicBoxChar1;
-    dynamicBoxChar1.SetAsBox(32.0f / (2 * SCALE), 32.0f / (2 * SCALE));
+    dynamicBoxChar1.SetAsBox(14.0f / (2 * SCALE), 26.0f / (2 * SCALE));
 
     b2FixtureDef fixtureDefChar1;
     fixtureDefChar1.shape = &dynamicBoxChar1;
     fixtureDefChar1.density = 10.0f;
-    fixtureDefChar1.friction = 2.0f;
+    fixtureDefChar1.friction = 0.0f;
     bodyChar1->CreateFixture(&fixtureDefChar1);
 
-    _bodies << qMakePair(bodyChar1, (QGraphicsItem *)(character1));
+    DynamicSprite sprite1;
+    sprite1.body = bodyChar1;
+    sprite1.item = character1;
+    sprite1.delta = QPointF(18, 21);
+    _bodies << sprite1;
 
     // Register character 1
     character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
     connect(character2, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
+    connect(character2, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged()));
     addItem(character2);
 
     b2BodyDef bodyDefChar2;
@@ -123,15 +129,19 @@ void Level::FinishCreateLevel()
     b2Body *bodyChar2 = _world->CreateBody(&bodyDefChar2);
 
     b2PolygonShape dynamicBoxChar2;
-    dynamicBoxChar2.SetAsBox(32.0f / (2 * SCALE), 32.0f / (2 * SCALE));
+    dynamicBoxChar2.SetAsBox(14.0f / (2 * SCALE), 26.0f / (2 * SCALE));
 
     b2FixtureDef fixtureDefChar2;
     fixtureDefChar2.shape = &dynamicBoxChar2;
     fixtureDefChar2.density = 10.0f;
-    fixtureDefChar2.friction = 2.0f;
+    fixtureDefChar2.friction = 0.0f;
     bodyChar2->CreateFixture(&fixtureDefChar2);
 
-    _bodies << qMakePair(bodyChar2, (QGraphicsItem *)(character2));
+    DynamicSprite sprite2;
+    sprite2.body = bodyChar2;
+    sprite2.item = character2;
+    sprite2.delta = QPointF(18, 21);
+    _bodies << sprite2;
 
     HealthDisplay *health1 = new HealthDisplay(character1);
     addItem(health1);
@@ -171,34 +181,11 @@ void Level::timerEvent(QTimerEvent *event)
 
     for(int i=0 ; i<_bodies.count() ; i++)
     {
-        b2Vec2 position = _bodies[i].first->GetPosition();
-        float32 angle = _bodies[i].first->GetAngle();
-        QSizeF boundingSize = _bodies[i].second->boundingRect().size();
-        _bodies[i].second->setPos(physicalToGraphical(position) - QPointF(boundingSize.width()/2, boundingSize.height()/2));
-        _bodies[i].second->setRotation(-(angle * 360.0) / (2 * 3.14));
+        b2Vec2 position = _bodies[i].body->GetPosition();
+        float32 angle = _bodies[i].body->GetAngle();
+        _bodies[i].item->setPos(physicalToGraphical(position) - _bodies[i].delta);
+        _bodies[i].item->setRotation(-(angle * 360.0) / (2 * 3.14));
         //inside Step()
-
-        if(i < 2)
-        {
-            b2Vec2 vel = _bodies[i].first->GetLinearVelocity();
-
-            Character::States characterState = ((Character *)(_bodies[i].second))->getStates();
-
-            if(characterState.testFlag(Character::MovingLeft))
-            {
-              vel.x = -1;
-            }
-            if(characterState.testFlag(Character::MovingRight))
-            {
-              vel.x = +1;
-            }
-            if(characterState.testFlag(Character::Idle))
-            {
-              vel.x = 0;
-            }
-
-            _bodies[i].first->SetLinearVelocity( vel );
-        }
     }
 
     _world->ClearForces();
@@ -256,7 +243,36 @@ void Level::registerFireBall(QGraphicsItem *fireBall)
 
     bodyFireBall->SetLinearVelocity(b2Vec2(1, 0));
 
-    _bodies << qMakePair(bodyFireBall, (QGraphicsItem *)(fireBall));
+    DynamicSprite spriteBall;
+    spriteBall.body = bodyFireBall;
+    spriteBall.item = fireBall;
+    spriteBall.delta = QPointF(fireBall->boundingRect().width(), fireBall->boundingRect().height()) / 2;
+    _bodies << spriteBall;
+}
+
+void Level::characterStatesChanged()
+{
+    b2Vec2 vel(0, 0);
+
+    Character *character = (Character *)sender();
+    Character::States characterState = character->getStates();
+
+    if(characterState.testFlag(Character::MovingLeft))
+    {
+        vel.x -= 0.7;
+    }
+    if(characterState.testFlag(Character::MovingRight))
+    {
+        vel.x += 0.7;
+    }
+
+    for(int i=0 ; i<_bodies.count() ; i++)
+    {
+        if(_bodies[i].item == character)
+        {
+            _bodies[i].body->SetLinearVelocity(vel);
+        }
+    }
 }
 
 QColor Level::GetBackgroundColor(QPoint pos)
