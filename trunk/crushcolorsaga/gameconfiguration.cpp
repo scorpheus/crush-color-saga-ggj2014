@@ -200,7 +200,7 @@ void GameConfiguration::SendFlyingCat()
     animation->setTimeLine(timer);
 
     for (float i = 0.0; i < 200.0; ++i)
-        animation->setPosAt (i / 200.0, QPointF(i*qCos(i/200.0)*2.0-20.0, 1.5*i/qCos(200.0+i/100.0)-40.0));
+        animation->setPosAt (i / 200.0, QPointF(i*qCos(i/200.0)*2.0-70.0, 1.5*i/qCos(200.0+i/100.0)-90.0));
     timer->start();
 }
 

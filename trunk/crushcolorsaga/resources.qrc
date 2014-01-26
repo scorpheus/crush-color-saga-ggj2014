@@ -35,5 +35,8 @@
         <file alias="hero1_bubble">assets/spr_hero1_bouboule02.png</file>
         <file alias="hero2_bubble">assets/spr_hero2_bouboule01.png</file>
         <file alias="flying_cat">assets/flying_cat.gif</file>
+        <file alias="snd_explosion">assets/snd_explosionboulettedef.wav</file>
+        <file alias="snd_jump">assets/snd_sautdef.wav</file>
+        <file alias="snd_shoot">assets/snd_tirdef.wav</file>
     </qresource>
 </RCC>

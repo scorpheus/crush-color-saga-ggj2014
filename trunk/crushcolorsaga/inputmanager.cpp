@@ -1,4 +1,5 @@
 #include "inputmanager.h"
+#include "soundmanager.h"
 
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -47,6 +48,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             Qt::Key key = Qt::Key(keyEvent->key());
             if(key == Qt::Key_Up)
             {
+                SoundManager::PlayJump();
                 _character1->setStates(_character1->getStates() | Character::Jumping);
                 return true;
             }
@@ -62,6 +64,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             }
             else if(key == Qt::Key_Enter)
             {
+                SoundManager::PlayShoot();
                 Character::States states1 = _character1->getStates();
                 if(states1.testFlag(Character::MovingLeft))
                 {
@@ -91,6 +94,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             }
             else if(key == Qt::Key_Z)
             {
+                SoundManager::PlayJump();
                 _character2->setStates(_character2->getStates() | Character::Jumping);
                 return true;
             }
@@ -106,6 +110,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             }
             else if(key == Qt::Key_Space)
             {
+                SoundManager::PlayShoot();
                 Character::States states2 = _character2->getStates();
                 if(states2.testFlag(Character::MovingLeft))
                 {
