@@ -21,10 +21,13 @@ class MainWindow : public QMainWindow
     {
        choice_level_1 = 0,
        choice_level_2,
+       choice_level_3,
        nb_choice_level
     };
 
     void ChangeLevel(AllLevel level_choice);
+
+    AllLevel _current_level;
 
    public slots:
         void NextLevel();
@@ -35,7 +38,6 @@ class MainWindow : public QMainWindow
         Phonon::MediaObject* music;                
         SoundManager *_sound_manager;
 
-    AllLevel _current_level;
 
     public slots:
 };

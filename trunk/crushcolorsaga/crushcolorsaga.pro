@@ -9,7 +9,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = crushcolorsaga
 TEMPLATE = app
-LIBS += -lBox2D
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -28,7 +27,10 @@ SOURCES += main.cpp\
     gameconfiguration.cpp \
     fireball.cpp \
     soundmanager.cpp \
-    blowup.cpp
+    blowup.cpp\
+    soundmanager.cpp \
+    level_3.cpp \
+    movingprojectorbackground_level3.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
@@ -46,8 +48,9 @@ HEADERS  += mainwindow.h \
     gameconfiguration.h \
     fireball.h \
     soundmanager.h \
-    blowup.h
-
+    blowup.h\
+    level_3.h \
+    movingprojectorbackground_level3.h
 FORMS    += mainwindow.ui
 
 RESOURCES += \
