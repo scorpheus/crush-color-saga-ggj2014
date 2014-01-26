@@ -193,6 +193,7 @@ void Level::punchingChecker()
     body1Rect.translate(_bodies[0].item->pos());
     body2Rect.translate(_bodies[1].item->pos());
 
+    int damageDone = 1;
 
     if(body1Rect.intersects(body2Rect))
     {
@@ -200,26 +201,70 @@ void Level::punchingChecker()
         {
             if(((Character*)_bodies[0].item)->getStates().testFlag(Character::HittingLeft))
             {
-                ((Character*)_bodies[1].item)->setCharacterHealth(((Character*)_bodies[1].item)->getCharacterHealth()*0.99);
-                qDebug() << ((Character*)_bodies[1].item)->getCharacterHealth();
+                if(((Character*)_bodies[0].item)->getShield() == Character::Stronger)
+                {
+                    damageDone = 3;
+                }
+                else
+                {
+                    damageDone = 1;
+                }
+                b2Vec2 vel = _bodies[1].body->GetLinearVelocity();
+                vel.y = -10.0;
+                vel.x = -10.0;
+                _bodies[1].body->SetLinearVelocity( vel );
+                //qDebug() << ((Character*)_bodies[1].item)->getCharacterHealth();
             }
             else if(((Character*)_bodies[1].item)->getStates().testFlag(Character::HittingRight))
             {
-                ((Character*)_bodies[0].item)->setCharacterHealth(((Character*)_bodies[0].item)->getCharacterHealth()*0.99);
-                qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
+                if(((Character*)_bodies[1].item)->getShield() == Character::Stronger)
+                {
+                    damageDone = 3;
+                }
+                else
+                {
+                    damageDone = 1;
+                }
+                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
+                vel.y = -10.0;
+                vel.x = 10.0;
+                _bodies[1].body->SetLinearVelocity( vel );
+               // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
         }
         else if(body1Rect.x() < body2Rect.x())
         {
             if(((Character*)_bodies[1].item)->getStates().testFlag(Character::HittingLeft))
             {
-                ((Character*)_bodies[0].item)->setCharacterHealth(((Character*)_bodies[0].item)->getCharacterHealth()*0.99);
-                qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
+                if(((Character*)_bodies[1].item)->getShield() == Character::Stronger)
+                {
+                    damageDone = 3;
+                }
+                else
+                {
+                    damageDone = 1;
+                }
+                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
+                vel.y = -10.0;
+                vel.x = -10.0;
+                _bodies[1].body->SetLinearVelocity( vel );
+               // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
             else if(((Character*)_bodies[0].item)->getStates().testFlag(Character::HittingRight))
             {
-                ((Character*)_bodies[1].item)->setCharacterHealth(((Character*)_bodies[1].item)->getCharacterHealth()*0.99);
-                qDebug() << ((Character*)_bodies[1].item)->getCharacterHealth();
+                if(((Character*)_bodies[0].item)->getShield() == Character::Stronger)
+                {
+                    damageDone = 3;
+                }
+                else
+                {
+                    damageDone = 1;
+                }
+                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
+                vel.y = -10.0;
+                vel.x = 10.0;
+                _bodies[1].body->SetLinearVelocity( vel );
+               // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
         }
     }
