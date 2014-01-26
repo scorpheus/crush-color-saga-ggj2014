@@ -35,7 +35,7 @@ Level::Level(QString level_name, QObject *parent) :
 
     addItem(new Contour(this));
 
-    _world = new b2World(b2Vec2(0.0f, -9.8f));
+    _world = new b2World(b2Vec2(0.0f, -0.1f));
     _world->SetAllowSleeping(false);
     connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
 }
@@ -114,7 +114,7 @@ void Level::FinishCreateLevel()
 
     b2FixtureDef fixtureDefChar1;
     fixtureDefChar1.shape = &dynamicBoxChar1;
-    fixtureDefChar1.density = 1.0f;
+    fixtureDefChar1.density = 25.0f;
     fixtureDefChar1.friction = 0.0f;
     bodyChar1->CreateFixture(&fixtureDefChar1);
 
@@ -124,7 +124,7 @@ void Level::FinishCreateLevel()
     sprite1.delta = QPointF(18, 21);
     _bodies << sprite1;
 
-    // Register character 1
+    // Register character 2
     character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
     connect(character2, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
     connect(character2, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged(Character::States)));
@@ -142,7 +142,7 @@ void Level::FinishCreateLevel()
 
     b2FixtureDef fixtureDefChar2;
     fixtureDefChar2.shape = &dynamicBoxChar2;
-    fixtureDefChar2.density = 1.0f;
+    fixtureDefChar2.density = 25.0f;
     fixtureDefChar2.friction = 0.0f;
     bodyChar2->CreateFixture(&fixtureDefChar2);
 
@@ -270,7 +270,7 @@ void Level::characterStatesChanged(Character::States changedStates)
         {
             if(changedStates.testFlag(Character::Jumping) && characterState.testFlag(Character::Jumping))
             {
-                float impulse = _bodies[i].body->GetMass() * 6;
+                float impulse = _bodies[i].body->GetMass() * 0.55;
                 _bodies[i].body->ApplyLinearImpulse(b2Vec2(0,impulse), _bodies[i].body->GetWorldCenter(), true);
             }
 
@@ -279,11 +279,11 @@ void Level::characterStatesChanged(Character::States changedStates)
 
             if(characterState.testFlag(Character::MovingLeft))
             {
-                vel.x -= 0.7;
+                vel.x -= 0.15;
             }
             if(characterState.testFlag(Character::MovingRight))
             {
-                vel.x += 0.7;
+                vel.x += 0.15;
             }
 
             _bodies[i].body->SetLinearVelocity(vel);
