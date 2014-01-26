@@ -10,7 +10,7 @@
 class FireBall : public QObject, public QGraphicsItem
 {
     public:
-        explicit FireBall(const QColor &color, bool superPower);
+        explicit FireBall(const QColor &color, bool superPower, QGraphicsItem *owner);
 
         virtual QRectF boundingRect() const;
 
@@ -22,10 +22,17 @@ class FireBall : public QObject, public QGraphicsItem
         inline bool isSuperPower() const
         { return _superPower; }
 
+        inline QGraphicsItem *getOwner() const
+        { return _owner; }
+
+        inline const QColor &getColor() const
+        { return _color; }
+
     protected:
         virtual void timerEvent(QTimerEvent *);
 
     private:
+        QGraphicsItem *_owner;
         bool _superPower;
         QColor _color;
         int _animationId;

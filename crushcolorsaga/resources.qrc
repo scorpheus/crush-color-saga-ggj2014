@@ -43,5 +43,12 @@
         <file alias="particle_9">assets/spr_32x32_particule_blanc_10.png</file>
         <file alias="particle_10">assets/spr_32x32_particule_blanc_11.png</file>
         <file alias="particle_5">assets/spr_32x32_particule_blanc_6.png</file>
+        <file alias="bigboom_0">assets/spr_bigboom_noir_1.png</file>
+        <file alias="bigboom_1">assets/spr_bigboom_noir_2.png</file>
+        <file alias="bigboom_2">assets/spr_bigboom_noir_3.png</file>
+        <file alias="bigboom_3">assets/spr_bigboom_noir_4.png</file>
+        <file alias="bigboom_4">assets/spr_bigboom_noir_5.png</file>
+        <file alias="bigboom_5">assets/spr_bigboom_noir_6.png</file>
+        <file alias="bigboom_6">assets/spr_bigboom_noir_7.png</file>
     </qresource>
 </RCC>

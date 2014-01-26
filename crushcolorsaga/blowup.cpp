@@ -1,27 +1,24 @@
-#include "fireball.h"
+#include "blowup.h"
 
 #include <QPainter>
 
 
-FireBall::FireBall(const QColor &color, bool superPower, QGraphicsItem *owner) :
+BlowUp::BlowUp(const QColor &color, QObject *parent) :
     QGraphicsItem(),
-    _owner(owner),
-    _superPower(superPower),
     _color(color),
-    _animationId(0),
-    _body(NULL)
+    _animation(0)
 {
-    startTimer(40);
+    startTimer(50);
 }
 
-QRectF FireBall::boundingRect() const
+QRectF BlowUp::boundingRect() const
 {
-    return QRectF(0, 0, 8, 8);
+    return QRectF(0, 0, 16, 16);
 }
 
-void FireBall::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
+void BlowUp::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    QPixmap pixmap = QPixmap(QString(":/models/bubble_%1").arg(_animationId));
+    QPixmap pixmap = QPixmap(QString(":/models/bigboom_%1").arg(_animation));
     QPixmap pixmapColored = QPixmap(pixmap.width(), pixmap.height());
     pixmapColored.fill(Qt::transparent);
     QPainter subPainter(&pixmapColored);
@@ -35,8 +32,16 @@ void FireBall::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     painter->drawPixmap(0, 0, pixmapColored);
 }
 
-void FireBall::timerEvent(QTimerEvent *)
+void BlowUp::timerEvent(QTimerEvent *)
 {
-    _animationId = (_animationId + 1) % 6;
-    update();
+    _animation++;
+
+    if(_animation > 6)
+    {
+        deleteLater();
+    }
+    else
+    {
+        update();
+    }
 }

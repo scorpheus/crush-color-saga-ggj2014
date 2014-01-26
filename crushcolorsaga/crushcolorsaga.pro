@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     simplevariantanimation.cpp \
     gameconfiguration.cpp \
     fireball.cpp \
-    soundmanager.cpp
+    soundmanager.cpp \
+    blowup.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     simplevariantanimation.h \
     gameconfiguration.h \
     fireball.h \
-    soundmanager.h
+    soundmanager.h \
+    blowup.h
 
 FORMS    += mainwindow.ui
 
