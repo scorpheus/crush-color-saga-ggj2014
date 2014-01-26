@@ -10,6 +10,7 @@
 #include "end_level.h"
 #include "platform.h"
 #include "fireball.h"
+#include "blowup.h"
 
 #include <QElapsedTimer>
 #include <QDebug>
@@ -311,10 +312,17 @@ void Level::timerEvent(QTimerEvent *event)
             qreal speed = qAbs(sprite.body->GetLinearVelocity().x);
             if(speed < 0.95)
             {
+                FireBall *fireBall = (FireBall *)sprite.item;
                 QRectF fireRect = sprite.item->boundingRect().translated(sprite.item->pos());
 
+                // Blow up
+                BlowUp *blowUp = new BlowUp(fireBall->getColor());
+                blowUp->setPos(fireBall->pos() - QPoint(4, 4));
+                addItem(blowUp);
+
+                // Hurt enemy, if any
                 Character *enemy = character2;
-                if(sprite.item == character2)
+                if(((FireBall *)sprite.item)->getOwner() == character2)
                 {
                     enemy = character1;
                 }
@@ -322,10 +330,11 @@ void Level::timerEvent(QTimerEvent *event)
                 QRectF enemyRect = enemy->boundingRect().translated(enemy->pos());
                 if(fireRect.intersects(enemyRect))
                 {
-                    int delta = ((FireBall *)sprite.item)->isSuperPower() ? 10 : 5;
+                    int delta = fireBall->isSuperPower() ? 10 : 5;
                     enemy->setCharacterHealth(enemy->getCharacterHealth() - delta);
                 }
 
+                // Remove fire ball
                 delete sprite.item;
                 _world->DestroyBody(sprite.body);
                 iterator.remove();

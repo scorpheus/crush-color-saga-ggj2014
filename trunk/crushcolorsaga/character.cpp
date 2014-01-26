@@ -186,7 +186,7 @@ void Character::setStates(States states)
            (!_states.testFlag(ThrowingRight) && states.testFlag(ThrowingRight)))
         {
             bool superPower = _shield == Surhuman;
-            FireBall *ball = new FireBall(_color, superPower);
+            FireBall *ball = new FireBall(_color, superPower, this);
             ball->setPos(QRectF(pos(), boundingRect().size()).center() +
                          QPointF(states.testFlag(ThrowingLeft) ? -14 : 14, 0));
             emit registerFireBall(ball,
