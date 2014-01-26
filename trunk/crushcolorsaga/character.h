@@ -7,7 +7,7 @@
 #include <QTimer>
 #include <QGraphicsRectItem>
 
-#include "level.h"
+class Level;
 
 class Character : public QObject, public QGraphicsItem
 {
@@ -20,9 +20,6 @@ class Character : public QObject, public QGraphicsItem
         virtual QRectF boundingRect() const;
 
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-
-signals:
-        void registerFireBall(QGraphicsItem *fireBall);
 
     public:
         typedef enum
@@ -48,6 +45,10 @@ signals:
         int _Health;
 
         Character::States getStates();
+
+    signals:
+        void registerFireBall(QGraphicsItem *fireBall);
+        void statesChanged(Character::States changedStates);
 
     public slots:
         void setStates(Character::States states);

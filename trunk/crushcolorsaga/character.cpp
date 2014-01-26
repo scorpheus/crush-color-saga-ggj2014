@@ -6,6 +6,7 @@
 #include <QGraphicsScene>
 
 #include "fireball.h"
+#include "level.h"
 
 Character::Character(int id, Level *level, const QColor &color) :
     _id(id),
@@ -120,7 +121,7 @@ Character::States Character::getStates()
 void Character::updateAnimation()
 {
     _animationIndex = (_animationIndex + 1) % 2;
-    _level->update();
+    update();
 }
 
 void Character::updateShield()
@@ -161,6 +162,7 @@ void Character::setStates(States states)
             emit registerFireBall(ball);
         }
 
+        States oldStates = _states;
         _states = states;
 
         if(_states.testFlag(MovingLeft) || _states.testFlag(MovingRight))
@@ -168,7 +170,9 @@ void Character::setStates(States states)
             _timerAnimation->start();
         }
 
-        _level->update();
+        update();
+
+        emit statesChanged(_states ^ oldStates);
     }
 }
 
