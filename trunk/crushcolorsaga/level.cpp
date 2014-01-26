@@ -21,7 +21,8 @@ const qreal B2_TIMESTEP = 1/60.0;
 const qint32 B2_VELOCITY_ITERATIONS = 6;
 const qint32 B2_POSITION_ITERATIONS = 2;
 const qreal SCALE = 50.0;
-
+const int SCENEWIDTH = 427;
+const int SCENEHEIGHT = 341;
 
 Level::Level(QString level_name, QObject *parent) :
     QGraphicsScene(parent),
@@ -29,7 +30,7 @@ Level::Level(QString level_name, QObject *parent) :
     _end_level(NULL),
     _bodies()
 {
-    setSceneRect(0, 0, 427, 341);
+    setSceneRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
     startTimer(0);
 
     addItem(new Contour(this));
@@ -59,10 +60,34 @@ void Level::FinishCreateLevel()
         }
     }
 
-  /*  b2BodyDef bodyDefBottomBorder;
-    QPointF center =*/
+    b2BodyDef bodyDefBottomBorder;
+    QPointF centerBottomBorder = QPointF(SCENEWIDTH/2, SCENEHEIGHT);
+    bodyDefBottomBorder.position = graphicalToPhysical(centerBottomBorder);
+    b2Body* bodyBottomBorder = _world->CreateBody(&bodyDefBottomBorder);
+    b2PolygonShape boxBottomBorder;
+    boxBottomBorder.SetAsBox((SCENEWIDTH / (2 * SCALE)),
+                             8/SCALE);
+    bodyBottomBorder->CreateFixture(&boxBottomBorder, 0.0f);
 
-    // Register charachter 1
+    b2BodyDef bodyDefLeftBorder;
+    QPointF centerLeftBorder = QPointF(0, SCENEHEIGHT);
+    bodyDefLeftBorder.position = graphicalToPhysical(centerLeftBorder);
+    b2Body* bodyLeftBorder = _world->CreateBody(&bodyDefLeftBorder);
+    b2PolygonShape boxLeftBorder;
+    boxLeftBorder.SetAsBox(8/SCALE,
+                             SCENEHEIGHT);
+    bodyLeftBorder->CreateFixture(&boxLeftBorder, 0.0f);
+
+    b2BodyDef bodyDefRightBorder;
+    QPointF centerRightBorder = QPointF(SCENEWIDTH, 0);
+    bodyDefRightBorder.position = graphicalToPhysical(centerRightBorder);
+    b2Body* bodyRightBorder = _world->CreateBody(&bodyDefRightBorder);
+    b2PolygonShape boxRightBorder;
+    boxRightBorder.SetAsBox(8/SCALE,
+                             SCENEHEIGHT);
+    bodyRightBorder->CreateFixture(&boxRightBorder, 0.0f);
+
+    // Register character 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
     addItem(character1);
 
