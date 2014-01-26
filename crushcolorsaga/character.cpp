@@ -152,8 +152,8 @@ void Character::setStates(States states)
         _animationIndex = 0;
 
         if(_shield >= VeryStronger &&
-           ((not _states.testFlag(HittingLeft) && states.testFlag(HittingLeft))) ||
-           ((not _states.testFlag(HittingRight) && states.testFlag(HittingRight))))
+           ((! _states.testFlag(HittingLeft) && states.testFlag(HittingLeft))) ||
+           ((! _states.testFlag(HittingRight) && states.testFlag(HittingRight))))
         {
             FireBall *ball = new FireBall(_color, _shield == Surhuman,
                                           states.testFlag(HittingLeft) ? Qt::RightToLeft : Qt::LeftToRight);
