@@ -5,6 +5,8 @@
 #include <Box2D/Box2D.h>
 //#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
+#include "character.h"
+
 class Character;
 class EndLevel;
 class Background;
@@ -47,7 +49,7 @@ class Level : public QGraphicsScene
 
     private slots:
         void registerFireBall(QGraphicsItem *fireBall);
-        void characterStatesChanged();
+        void characterStatesChanged(Character::States changedStates);
 
     protected:
         virtual void timerEvent(QTimerEvent *event);
