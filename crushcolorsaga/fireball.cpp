@@ -3,12 +3,12 @@
 #include <QPainter>
 
 
-FireBall::FireBall(const QColor &color, bool superPower, Qt::LayoutDirection direction) :
+FireBall::FireBall(const QColor &color, bool superPower) :
     QGraphicsItem(),
+    _superPower(superPower),
     _color(color),
     _animationId(0),
-    _superPower(superPower),
-    _direction(direction)
+    _body(NULL)
 {
     startTimer(40);
 }

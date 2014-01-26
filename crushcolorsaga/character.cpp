@@ -166,11 +166,13 @@ void Character::setStates(States states)
         if((!_states.testFlag(ThrowingLeft) && states.testFlag(ThrowingLeft)) ||
            (!_states.testFlag(ThrowingRight) && states.testFlag(ThrowingRight)))
         {
-            FireBall *ball = new FireBall(_color, _shield == Surhuman,
-                                          states.testFlag(HittingLeft) ? Qt::RightToLeft : Qt::LeftToRight);
+            bool superPower = _shield == Surhuman;
+            FireBall *ball = new FireBall(_color, superPower);
             ball->setPos(QRectF(pos(), boundingRect().size()).center() +
-                         QPointF(states.testFlag(HittingLeft) ? -14 : 14, 0));
-            emit registerFireBall(ball);
+                         QPointF(states.testFlag(ThrowingLeft) ? -14 : 14, 0));
+            emit registerFireBall(ball,
+                                  superPower,
+                                  states.testFlag(ThrowingLeft) ? Qt::RightToLeft : Qt::LeftToRight);
         }
 
         States oldStates = _states;
