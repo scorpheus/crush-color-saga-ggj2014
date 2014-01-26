@@ -59,8 +59,8 @@ void Level::FinishCreateLevel()
         }
     }
 
-    b2BodyDef bodyDefBottomBorder;
-    QPointF center =
+  /*  b2BodyDef bodyDefBottomBorder;
+    QPointF center =*/
 
     // Register charachter 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
@@ -84,7 +84,7 @@ void Level::FinishCreateLevel()
 
     _bodies << qMakePair(bodyChar1, (QGraphicsItem *)(character1));
 
-    // Register charachter 1
+    // Register character 1
     character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
     addItem(character2);
 
