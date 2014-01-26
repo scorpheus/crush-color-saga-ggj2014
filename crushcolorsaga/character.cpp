@@ -95,6 +95,11 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     painter->drawPixmap(0, 0, pixmap);
 }
 
+Character::States Character::getStates()
+{
+    return _states;
+}
+
 void Character::updateAnimation()
 {
     _animationIndex = (_animationIndex + 1) % 2;
