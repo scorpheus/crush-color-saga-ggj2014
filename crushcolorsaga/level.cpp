@@ -223,10 +223,10 @@ void Level::punchingChecker()
                 {
                     damageDone = 1;
                 }
-                b2Vec2 vel = _bodies[1].body->GetLinearVelocity();
-                vel.y = -10.0;
-                vel.x = -10.0;
-                _bodies[1].body->SetLinearVelocity( vel );
+                ((Character*)_bodies[1].item)->setCharacterHealth(((Character*)_bodies[1].item)->getCharacterHealth()+damageDone);
+                float impulse = _bodies[1].body->GetMass() * 10;
+                qDebug() << impulse;
+                _bodies[1].body->ApplyLinearImpulse(b2Vec2(impulse,impulse), _bodies[1].body->GetWorldCenter(), true);
                 //qDebug() << ((Character*)_bodies[1].item)->getCharacterHealth();
             }
             else if(((Character*)_bodies[1].item)->getStates().testFlag(Character::HittingRight))
@@ -239,10 +239,9 @@ void Level::punchingChecker()
                 {
                     damageDone = 1;
                 }
-                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
-                vel.y = -10.0;
-                vel.x = 10.0;
-                _bodies[1].body->SetLinearVelocity( vel );
+                ((Character*)_bodies[0].item)->setCharacterHealth(((Character*)_bodies[0].item)->getCharacterHealth()+damageDone);
+                float impulse = _bodies[0].body->GetMass() * 10;
+                _bodies[0].body->ApplyLinearImpulse(b2Vec2(impulse ,impulse), _bodies[0].body->GetWorldCenter(), true);
                // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
         }
@@ -258,10 +257,10 @@ void Level::punchingChecker()
                 {
                     damageDone = 1;
                 }
-                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
-                vel.y = -10.0;
-                vel.x = -10.0;
-                _bodies[1].body->SetLinearVelocity( vel );
+                ((Character*)_bodies[0].item)->setCharacterHealth(((Character*)_bodies[0].item)->getCharacterHealth()+damageDone);
+                float impulse = _bodies[0].body->GetMass() * 10;
+                qDebug() << impulse;
+                _bodies[0].body->ApplyLinearImpulse(b2Vec2(impulse,impulse), _bodies[0].body->GetWorldCenter(), true);
                // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
             else if(((Character*)_bodies[0].item)->getStates().testFlag(Character::HittingRight))
@@ -274,10 +273,10 @@ void Level::punchingChecker()
                 {
                     damageDone = 1;
                 }
-                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
-                vel.y = -10.0;
-                vel.x = 10.0;
-                _bodies[1].body->SetLinearVelocity( vel );
+				
+                ((Character*)_bodies[1].item)->setCharacterHealth(((Character*)_bodies[1].item)->getCharacterHealth()+damageDone);
+                float impulse = _bodies[1].body->GetMass() * 10;
+                _bodies[1].body->ApplyLinearImpulse(b2Vec2(impulse,impulse), _bodies[1].body->GetWorldCenter(), true);
                // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
         }
