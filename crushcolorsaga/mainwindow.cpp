@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     music = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/background_sound"));
     connect(music, SIGNAL(aboutToFinish()), this, SLOT(restartVideo()));
-    music->play();
+    //music->play();
 }
 
 MainWindow::~MainWindow()

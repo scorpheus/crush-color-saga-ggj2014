@@ -21,6 +21,9 @@ class Character : public QObject, public QGraphicsItem
 
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
+signals:
+        void registerFireBall(QGraphicsItem *fireBall);
+
     public:
         typedef enum
         {

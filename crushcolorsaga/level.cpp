@@ -89,6 +89,7 @@ void Level::FinishCreateLevel()
 
     // Register character 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
+    connect(character1, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
     addItem(character1);
 
     b2BodyDef bodyDefChar1;
@@ -104,13 +105,14 @@ void Level::FinishCreateLevel()
     b2FixtureDef fixtureDefChar1;
     fixtureDefChar1.shape = &dynamicBoxChar1;
     fixtureDefChar1.density = 10.0f;
-    fixtureDefChar1.friction = 0.5f;
+    fixtureDefChar1.friction = 2.0f;
     bodyChar1->CreateFixture(&fixtureDefChar1);
 
     _bodies << qMakePair(bodyChar1, (QGraphicsItem *)(character1));
 
     // Register character 1
     character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
+    connect(character2, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
     addItem(character2);
 
     b2BodyDef bodyDefChar2;
@@ -126,7 +128,7 @@ void Level::FinishCreateLevel()
     b2FixtureDef fixtureDefChar2;
     fixtureDefChar2.shape = &dynamicBoxChar2;
     fixtureDefChar2.density = 10.0f;
-    fixtureDefChar2.friction = 0.5f;
+    fixtureDefChar2.friction = 2.0f;
     bodyChar2->CreateFixture(&fixtureDefChar2);
 
     _bodies << qMakePair(bodyChar2, (QGraphicsItem *)(character2));
@@ -163,7 +165,7 @@ b2Vec2 Level::graphicalToPhysical(const QPointF &point)
     return b2Vec2(point.x() / SCALE, (height() - point.y()) / SCALE);
 }
 
-void Level::timerEvent(QTimerEvent * event)
+void Level::timerEvent(QTimerEvent *event)
 {
     _world->Step(B2_TIMESTEP, B2_VELOCITY_ITERATIONS, B2_POSITION_ITERATIONS);
 
@@ -175,25 +177,28 @@ void Level::timerEvent(QTimerEvent * event)
         _bodies[i].second->setPos(physicalToGraphical(position) - QPointF(boundingSize.width()/2, boundingSize.height()/2));
         _bodies[i].second->setRotation(-(angle * 360.0) / (2 * 3.14));
         //inside Step()
-        b2Vec2 vel = _bodies[i].first->GetLinearVelocity();
 
-        Character::States characterState = ((Character *)(_bodies[i].second))->getStates();
+        if(i < 2)
+        {
+            b2Vec2 vel = _bodies[i].first->GetLinearVelocity();
 
-        if(characterState.testFlag(Character::MovingLeft))
-        {
-          vel.x = -1;
-        }
-        if(characterState.testFlag(Character::MovingRight))
-        {
-          vel.x = +1;
-        }
-        if(characterState.testFlag(Character::Idle))
-        {
-          vel.x = 0;
-        }
+            Character::States characterState = ((Character *)(_bodies[i].second))->getStates();
 
-        _bodies[i].first->SetLinearVelocity( vel );
-        qDebug() << vel.x << vel.y;
+            if(characterState.testFlag(Character::MovingLeft))
+            {
+              vel.x = -1;
+            }
+            if(characterState.testFlag(Character::MovingRight))
+            {
+              vel.x = +1;
+            }
+            if(characterState.testFlag(Character::Idle))
+            {
+              vel.x = 0;
+            }
+
+            _bodies[i].first->SetLinearVelocity( vel );
+        }
     }
 
     _world->ClearForces();
@@ -225,6 +230,33 @@ void Level::level_changed( const QList<QRectF> & region )
         }
         return;
     }
+}
+
+void Level::registerFireBall(QGraphicsItem *fireBall)
+{
+    addItem(fireBall);
+
+    b2BodyDef bodyDefFireBall;
+    bodyDefFireBall.type = b2_dynamicBody;
+    bodyDefFireBall.position = graphicalToPhysical(fireBall->pos());
+    bodyDefFireBall.fixedRotation = true;
+    bodyDefFireBall.gravityScale = 0;
+
+    b2Body *bodyFireBall = _world->CreateBody(&bodyDefFireBall);
+
+    b2PolygonShape dynamicBoxFireBall;
+    dynamicBoxFireBall.SetAsBox(fireBall->boundingRect().width() / (2 * SCALE),
+                                fireBall->boundingRect().height() / (2 * SCALE));
+
+    b2FixtureDef fixtureDefFireBall;
+    fixtureDefFireBall.shape = &dynamicBoxFireBall;
+    fixtureDefFireBall.density = 0.0f;
+    fixtureDefFireBall.friction = 0.0f;
+    bodyFireBall->CreateFixture(&fixtureDefFireBall);
+
+    bodyFireBall->SetLinearVelocity(b2Vec2(1, 0));
+
+    _bodies << qMakePair(bodyFireBall, (QGraphicsItem *)(fireBall));
 }
 
 QColor Level::GetBackgroundColor(QPoint pos)
