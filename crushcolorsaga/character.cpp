@@ -153,22 +153,26 @@ void Character::CheckVulnerabilityColor()
     QColor backgroundColor = _level->GetBackgroundColor(boundingRect().translated(scenePos().toPoint()).center().toPoint());
 
     ShieldState newShieldState;
-    int hueDifference = qAbs(backgroundColor.hue() - _color.hue()) % 360;
+    int hueDifference = qAbs(backgroundColor.hue() - _color.hue());
+    if(hueDifference > 180)
+    {
+        hueDifference = qAbs(backgroundColor.hue() - (360 - _color.hue()));
+    }
 
     // All color in white, so everyone got surhuman
-    if(backgroundColor.saturation() < 10)
+    if(backgroundColor.saturation() <= 10 && backgroundColor.value() >= 245)
         newShieldState = Surhuman;
     else    // no color so normal
-    if(backgroundColor.value() < 10)
+    if(backgroundColor.lightness() <= 10)
         newShieldState = Normal;
     else    // the character is in its own color, surhuman
-    if(hueDifference < 90)
+    if(hueDifference <= 45)
         newShieldState = Surhuman;
     else    // the color is one of the side of the character color, very strong
-    if(hueDifference < 180)
+    if(hueDifference <= 90)
         newShieldState = VeryStronger;
     else    // the color is rgb, just stronger
-    if(hueDifference < 240)
+    if(hueDifference <= 135)
         newShieldState = Stronger;
     else    // for the opposite color, just be normal
         newShieldState = Normal;
