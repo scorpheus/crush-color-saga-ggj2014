@@ -1,8 +1,9 @@
 #include "level_2.h"
 
 #include "platform.h"
+#include "level.h"
 
-void Level_2::CreateLevelPlatform ( )
+void Level_2::CreateLevelPlatformImpl(const QSize &size)
 {
     Platform *platform = new Platform(5);
     platform->moveBy(0, 0);

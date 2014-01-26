@@ -9,7 +9,7 @@ class Level_1 : public Level
 
     public:
         Level_1(QString level_name, QObject *parent = 0):Level(level_name, parent){};
-        virtual void CreateLevelPlatform();
+        virtual void CreateLevelPlatformImpl(const QSize &size);
     private:
         b2World* world;
 };
