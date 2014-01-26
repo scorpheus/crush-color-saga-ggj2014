@@ -73,36 +73,36 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
     switch(_shield)
     {
-        case Normal:
-            break;
-        case Stronger:
-            {
-                QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
-                pixmapShield.fill(_color);
-                pixmapShield.setMask(pixmap.mask());
-                painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
-            }
-            break;
-        case VeryStronger:
-            {
-                QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
-                pixmapShield.fill(Qt::transparent);
-                QPainter subPainter(&pixmapShield);
-                subPainter.drawPixmap(0, 0, QPixmap(QString(":/models/particle_%1").arg(_particleIndex)));
-                subPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-                subPainter.fillRect(0, 0, pixmap.width(), pixmap.height(), _color);
-                subPainter.end();
-                painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
-            }
-            break;
-        case Surhuman:
-            {
-                QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
-                pixmapShield.fill(_surhumanShieldCurrentColor);
-                pixmapShield.setMask(pixmap.mask());
-                painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
-            }
-            break;
+    case Normal:
+        break;
+    case Stronger:
+    {
+        QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+        pixmapShield.fill(_color);
+        pixmapShield.setMask(pixmap.mask());
+        painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+    }
+        break;
+    case VeryStronger:
+    {
+        QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+        pixmapShield.fill(Qt::transparent);
+        QPainter subPainter(&pixmapShield);
+        subPainter.drawPixmap(0, 0, QPixmap(QString(":/models/particle_%1").arg(_particleIndex)));
+        subPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        subPainter.fillRect(0, 0, pixmap.width(), pixmap.height(), _color);
+        subPainter.end();
+        painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+    }
+        break;
+    case Surhuman:
+    {
+        QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+        pixmapShield.fill(_surhumanShieldCurrentColor);
+        pixmapShield.setMask(pixmap.mask());
+        painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+    }
+        break;
     }
 
     painter->drawPixmap(0, 0, pixmap);
@@ -111,6 +111,23 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 Character::States Character::getStates()
 {
     return _states;
+}
+
+int Character::getCharacterHealth()
+{
+    return _Health;
+}
+
+void Character::setCharacterHealth(int health)
+{
+    if(health <= 0)
+    {
+        _Health = 0;
+    }
+    else
+    {
+        _Health = health;
+    }
 }
 
 void Character::updateAnimation()
@@ -195,19 +212,19 @@ void Character::CheckVulnerabilityColor()
     if(backgroundColor.saturation() <= 10 && backgroundColor.value() >= 245)
         newShieldState = Surhuman;
     else    // no color so normal
-    if(backgroundColor.lightness() <= 10)
-        newShieldState = Normal;
-    else    // the character is in its own color, surhuman
-    if(hueDifference <= 45)
-        newShieldState = Surhuman;
-    else    // the color is one of the side of the character color, very strong
-    if(hueDifference <= 90)
-        newShieldState = VeryStronger;
-    else    // the color is rgb, just stronger
-    if(hueDifference <= 135)
-        newShieldState = Stronger;
-    else    // for the opposite color, just be normal
-        newShieldState = Normal;
+        if(backgroundColor.lightness() <= 10)
+            newShieldState = Normal;
+        else    // the character is in its own color, surhuman
+            if(hueDifference <= 45)
+                newShieldState = Surhuman;
+            else    // the color is one of the side of the character color, very strong
+                if(hueDifference <= 90)
+                    newShieldState = VeryStronger;
+                else    // the color is rgb, just stronger
+                    if(hueDifference <= 135)
+                        newShieldState = Stronger;
+                    else    // for the opposite color, just be normal
+                        newShieldState = Normal;
 
     if(newShieldState != _shield)
     {

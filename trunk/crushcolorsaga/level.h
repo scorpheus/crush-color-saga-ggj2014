@@ -43,6 +43,7 @@ class Level : public QGraphicsScene
     private:
         QPointF physicalToGraphical(const b2Vec2 &point);
         b2Vec2 graphicalToPhysical(const QPointF &point);
+        void punchingChecker();
 
     public slots:
         void level_changed( const QList<QRectF> & region);
