@@ -7,6 +7,7 @@ SoundManager::SoundManager()
     _player_shoot = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/snd_shoot"));
     _player_jump = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/snd_jump"));
     _player_explosion = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/snd_explosion"));
+    _player_hit_taken = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/hit_taken"));
 }
 
 void SoundManager::PlayShoot()
@@ -25,4 +26,9 @@ void SoundManager::PlayExplosion()
 {
     g_SoundManager->_player_explosion->stop();
     g_SoundManager->_player_explosion->play();
+}
+void SoundManager::PlayHitTaken()
+{
+    g_SoundManager->_player_hit_taken->stop();
+    g_SoundManager->_player_hit_taken->play();
 }

@@ -5,6 +5,7 @@
 
 #include "level_1.h"
 #include "level_2.h"
+#include "level_3.h"
 
 MainWindow* g_MainWindow;
 
@@ -46,7 +47,10 @@ void MainWindow::ChangeLevel(AllLevel level_choice)
         _level = new Level_1("level_test");
     else
     if(level_choice == choice_level_2)
-        _level = new Level_2("level_colorstripe");
+        _level = new Level_2("bg_level_3");
+    else
+    if(level_choice == choice_level_3)
+        _level = new Level_3("level_colorstripe");
 
     _current_level = level_choice;
 

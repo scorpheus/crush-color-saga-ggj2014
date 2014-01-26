@@ -1,6 +1,7 @@
 #include "level.h"
 
 #include "movingprojectorbackground.h"
+#include "movingprojectorbackground_level3.h"
 #include "wikimediaimagebackground.h"
 #include "contour.h"
 #include "character.h"
@@ -18,6 +19,9 @@
 #include <QImage>
 #include <QTimeLine>
 #include <QDebug>
+
+#include "mainwindow.h"
+extern MainWindow* g_MainWindow;
 
 const qreal B2_TIMESTEP = 1/60.0;
 const qint32 B2_VELOCITY_ITERATIONS = 6;
@@ -136,7 +140,7 @@ void Level::FinishCreateLevel()
 
     b2BodyDef bodyDefChar2;
     bodyDefChar2.type = b2_dynamicBody;
-    bodyDefChar2.position = graphicalToPhysical(QPointF(220.0f, 10.0f));
+    bodyDefChar2.position = graphicalToPhysical(QPointF(220.0f, 60.0f));
     bodyDefChar2.fixedRotation = true;
 
     b2Body *bodyChar2 = _world->CreateBody(&bodyDefChar2);
@@ -166,8 +170,13 @@ void Level::FinishCreateLevel()
 
     new InputManager(character1, character2, this);
 
+    if(g_MainWindow->_current_level == g_MainWindow->choice_level_2)
+        _background = new MovingProjectorBackground_Level3(_level_name);
+    else
+        _background = new MovingProjectorBackground();
+
     //_background = new Background();
-     _background = new MovingProjectorBackground();
+  //   _background = new MovingProjectorBackground();
     //_background = new WikimediaImageBackground();
     _background->setZValue(-100);
     addItem(_background);
