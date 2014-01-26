@@ -66,7 +66,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             {
                 SoundManager::PlayShoot();
                 Character::States states1 = _character1->getStates();
-                if(states1.testFlag(Character::MovingLeft))
+                if(_character1->getLastDirectionLeft())
                 {
                     if(_character1->getShield() >= Character::VeryStronger)
                     {
@@ -112,7 +112,7 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             {
                 SoundManager::PlayShoot();
                 Character::States states2 = _character2->getStates();
-                if(states2.testFlag(Character::MovingLeft))
+                if(_character2->getLastDirectionLeft())
                 {
                     if(_character2->getShield() >= Character::VeryStronger)
                     {

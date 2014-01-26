@@ -57,6 +57,9 @@ class Character : public QObject, public QGraphicsItem
         inline ShieldState getShield() const
         { return _shield; }
 
+        inline bool getLastDirectionLeft() const
+        { return _lastDirectionLeft; }
+
     signals:
         void registerFireBall(QGraphicsItem *fireBall, bool superPower, Qt::LayoutDirection direction);
         void statesChanged(Character::States changedStates);
@@ -89,6 +92,7 @@ class Character : public QObject, public QGraphicsItem
         QColor _surhumanShieldCurrentColor;
         QDateTime _lastShieldUpdate;
         ShieldState _shield;
+        bool _lastDirectionLeft;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Character::States);
