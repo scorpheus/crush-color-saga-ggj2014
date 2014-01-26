@@ -19,14 +19,16 @@ extern MainWindow* g_MainWindow;
 /*static*/ int GameConfiguration::_id_character1 = 1;
 /*static*/ int GameConfiguration::_id_character2 = 2;
 
+/*static*/ MainWindow::AllLevel GameConfiguration::_stage = MainWindow::choice_level_2;
+
 /*static*/ QColor GameConfiguration::_color_character1 = Qt::red;
 /*static*/ QColor GameConfiguration::_color_character2 = Qt::blue;
 
-class GameConfigurationValidate : public QGraphicsSimpleTextItem
+class GameConfigurationValidate : public QGraphicsPixmapItem
 {
-public:  GameConfigurationValidate( const QString & text, QGraphicsItem * parent = 0 ) : QGraphicsSimpleTextItem(text, parent){};
+public:  GameConfigurationValidate( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
     protected:
-        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ g_MainWindow->ChangeLevel(MainWindow::choice_level_1); }
+        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ g_MainWindow->ChangeLevel(GameConfiguration::_stage); }
 };
 
 class GameConfigurationChar1ArrowPrev : public QGraphicsPixmapItem
@@ -55,6 +57,44 @@ class GameConfigurationChar2ArrowNext : public QGraphicsPixmapItem
 public:  GameConfigurationChar2ArrowNext( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
     protected:
         virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){ ++GameConfiguration::_id_character2; if(GameConfiguration::_id_character2>GameConfiguration::nb_character) GameConfiguration::_id_character2 = 1; }
+};
+
+class GameConfigurationStageArrowPrev : public QGraphicsPixmapItem
+{
+public:  GameConfigurationStageArrowPrev( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+    protected:
+        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){
+        switch(GameConfiguration::_stage)
+        {
+            case MainWindow::choice_level_1:
+               GameConfiguration::_stage = MainWindow::choice_level_3;
+            break;
+            case MainWindow::choice_level_2:
+                GameConfiguration::_stage = MainWindow::choice_level_1;
+            break;
+            case MainWindow::choice_level_3:
+                GameConfiguration::_stage = MainWindow::choice_level_2;
+            break;
+        }}
+};
+
+class GameConfigurationStageArrowNext : public QGraphicsPixmapItem
+{
+public:  GameConfigurationStageArrowNext( const QPixmap & pixmap, QGraphicsItem * parent = 0 ) : QGraphicsPixmapItem(pixmap, parent){};
+    protected:
+        virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ){
+        switch(GameConfiguration::_stage)
+        {
+            case MainWindow::choice_level_1:
+               GameConfiguration::_stage = MainWindow::choice_level_2;
+            break;
+            case MainWindow::choice_level_2:
+                GameConfiguration::_stage = MainWindow::choice_level_3;
+            break;
+            case MainWindow::choice_level_3:
+                GameConfiguration::_stage = MainWindow::choice_level_1;
+            break;
+        }}
 };
 
 //*****************************************************************************************************************
@@ -125,55 +165,64 @@ GameConfiguration::GameConfiguration(QObject *parent) :
 
     GameConfigurationChar1ArrowPrev* _pixmap_item_character_1_arrow_left = new GameConfigurationChar1ArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
     addItem(_pixmap_item_character_1_arrow_left);
-    _pixmap_item_character_1_arrow_left->setPos(72, 189);
+    _pixmap_item_character_1_arrow_left->setPos(67, 189);
     GameConfigurationChar2ArrowPrev* _pixmap_item_character_2_arrow_left = new GameConfigurationChar2ArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
     addItem(_pixmap_item_character_2_arrow_left);
-    _pixmap_item_character_2_arrow_left->setPos(297, 189);
+    _pixmap_item_character_2_arrow_left->setPos(293, 189);
 
     GameConfigurationChar1ArrowNext* _pixmap_item_character_1_arrow_right = new GameConfigurationChar1ArrowNext(QPixmap(QString(":/models/select_arrow_right")));
     addItem(_pixmap_item_character_1_arrow_right);
-    _pixmap_item_character_1_arrow_right->setPos(113, 189);
+    _pixmap_item_character_1_arrow_right->setPos(107, 189);
     GameConfigurationChar2ArrowNext* _pixmap_item_character_2_arrow_right = new GameConfigurationChar2ArrowNext(QPixmap(QString(":/models/select_arrow_right")));
     addItem(_pixmap_item_character_2_arrow_right);
-    _pixmap_item_character_2_arrow_right->setPos(338, 189);
+    _pixmap_item_character_2_arrow_right->setPos(333, 189);
 
     //*****************************************************************
 
     GameConfigurationChar1ColorArrowPrev* _pixmap_item_character_1_color_arrow_left = new GameConfigurationChar1ColorArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
     addItem(_pixmap_item_character_1_color_arrow_left);
-    _pixmap_item_character_1_color_arrow_left->setPos(72, 234);
+    _pixmap_item_character_1_color_arrow_left->setPos(67, 234);
     GameConfigurationChar2ColorArrowPrev* _pixmap_item_character_2_color_arrow_left = new GameConfigurationChar2ColorArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
     addItem(_pixmap_item_character_2_color_arrow_left);
-    _pixmap_item_character_2_color_arrow_left->setPos(297, 234);
+    _pixmap_item_character_2_color_arrow_left->setPos(293, 234);
 
     GameConfigurationChar1ColorArrowNext* _pixmap_item_character_1_color_arrow_right = new GameConfigurationChar1ColorArrowNext(QPixmap(QString(":/models/select_arrow_right")));
     addItem(_pixmap_item_character_1_color_arrow_right);
-    _pixmap_item_character_1_color_arrow_right->setPos(113, 234);
+    _pixmap_item_character_1_color_arrow_right->setPos(107, 234);
     GameConfigurationChar2ColorArrowNext* _pixmap_item_character_2_color_arrow_right = new GameConfigurationChar2ColorArrowNext(QPixmap(QString(":/models/select_arrow_right")));
     addItem(_pixmap_item_character_2_color_arrow_right);
-    _pixmap_item_character_2_color_arrow_right->setPos(338, 234);
+    _pixmap_item_character_2_color_arrow_right->setPos(333, 234);
 
+    //*****************************************************************
+
+    GameConfigurationStageArrowPrev* _pixmap_item_stage_color_arrow_left = new GameConfigurationStageArrowPrev(QPixmap(QString(":/models/select_arrow_left")));
+    addItem(_pixmap_item_stage_color_arrow_left);
+    _pixmap_item_stage_color_arrow_left->setPos(163,238);
+    GameConfigurationStageArrowNext* _pixmap_item_stage_color_arrow_right = new GameConfigurationStageArrowNext(QPixmap(QString(":/models/select_arrow_right")));
+    addItem(_pixmap_item_stage_color_arrow_right);
+    _pixmap_item_stage_color_arrow_right->setPos(238, 238);
 
 
     _pixmap_item_character_1 = addPixmap(QPixmap(QString(":/models/portait_char_%1").arg(_id_character1)));
-    _pixmap_item_character_1->setPos(88, 185);
-    _pixmap_item_character_2 = addPixmap(QPixmap(QString(":/models/portait_char_%1").arg(_id_character2)));
-    _pixmap_item_character_2->setPos(313, 185);
+    _pixmap_item_character_1->setPos(83, 185);
+    _pixmap_item_character_2 = addPixmap(QPixmap(QString(":/models/select_dance").arg(_id_character2)));
+    _pixmap_item_character_2->setPos(309, 185);
 
-    _pixmap_color_character_1 = addRect( 88, 230, 24, 24, QPen(Qt::NoPen), QBrush (_color_character1));
-    _pixmap_color_character_2 = addRect( 313, 230, 24, 24, QPen(Qt::NoPen), QBrush (_color_character2));
+    _pixmap_stage = addPixmap(QPixmap(QString(":/models/portait_char_%1")));
+    _pixmap_stage->setPos(178, 227);
+
+    _pixmap_color_character_1 = addRect( 83, 230, 24, 24, QPen(Qt::NoPen), QBrush (_color_character1));
+    _pixmap_color_character_2 = addRect( 309, 230, 24, 24, QPen(Qt::NoPen), QBrush (_color_character2));
 
     _timerAnimation->setInterval(200);
     connect(_timerAnimation, SIGNAL(timeout()), this, SLOT(updateAnimation()));
     _timerAnimation->start();
 
-    QGraphicsSimpleTextItem* _text_item_validate = new GameConfigurationValidate("Valider");
-    _text_item_validate->setBrush(QColor(255,255,0,200));
-    _text_item_validate->setPen(QPen(Qt::black));
+    GameConfigurationValidate* _text_item_validate = new GameConfigurationValidate(QPixmap(QString(":/models/select_dance")));
+    _text_item_validate->setPos(156,288);
     addItem(_text_item_validate);
-    _text_item_validate->setScale(3.0);
-    QRectF validate_rect = _text_item_validate->boundingRect();
-    _text_item_validate->setPos(width()*0.42 - validate_rect.width()*0.5, height()*0.7-validate_rect.height());
+
+    updateAnimation();
 
     // add flying at
     QTimeLine* timer = new QTimeLine(rand()%2000);
@@ -217,4 +266,16 @@ void GameConfiguration::updateAnimation()
     _pixmap_color_character_1->setBrush(QBrush (_color_character1));
     _pixmap_color_character_2->setBrush(QBrush (_color_character2));
 
+    switch(GameConfiguration::_stage)
+    {
+        case MainWindow::choice_level_1:
+           _pixmap_stage->setPixmap(QPixmap(QString(":/models/stage1")));
+        break;
+        case MainWindow::choice_level_2:
+            _pixmap_stage->setPixmap(QPixmap(QString(":/models/stage2")));
+        break;
+        case MainWindow::choice_level_3:
+            _pixmap_stage->setPixmap(QPixmap(QString(":/models/stage3")));
+        break;
+    }
 }
