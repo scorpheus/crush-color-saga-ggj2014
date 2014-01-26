@@ -9,6 +9,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = crushcolorsaga
 TEMPLATE = app
+LIBS += -lBox2D
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -52,7 +53,6 @@ HEADERS  += mainwindow.h \
     level_3.h \
     movingprojectorbackground_level3.h \
     wikimediaimagebackground.h
-
 FORMS    += mainwindow.ui
 
 RESOURCES += \

@@ -9,7 +9,7 @@ class Level_2 : public Level
 
     public:
         Level_2(QString level_name, QObject *parent = 0):Level(level_name, parent){};
-        virtual void CreateLevelPlatform();
+        virtual void CreateLevelPlatformImpl(const QSize &size);
 };
 
 #endif // LEVEL_2_H

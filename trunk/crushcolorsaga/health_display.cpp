@@ -11,11 +11,13 @@ HealthDisplay::HealthDisplay(Character *character) :
 
 QRectF HealthDisplay::boundingRect() const
 {
-    return QRectF(0, 0, 100, 20);
+    return QRectF(0, 0, 50, 12);
 }
 
 void HealthDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    painter->setOpacity(1);
+
     QRectF adjustedRect = boundingRect().adjusted(1, 1, -1, -1);
 
     int red = 0;
@@ -40,6 +42,4 @@ void HealthDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     pen.setJoinStyle(Qt::MiterJoin);
     painter->setPen(pen);
     painter->drawRect(adjustedRect);
-
-    //painter->drawText(_start, QString::number(_character->_Health));
 }

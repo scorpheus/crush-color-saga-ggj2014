@@ -2,6 +2,8 @@
 
 #include <QPainter>
 
+#include "level.h"
+
 
 Background::Background(const QImage &image) :
     _image(image)
@@ -10,7 +12,7 @@ Background::Background(const QImage &image) :
 
 QRectF Background::boundingRect() const
 {
-    return QRectF(0, 0, 427, 341);
+    return QRectF(0, 0, SCENEWIDTH, SCENEHEIGHT);
 }
 
 void Background::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)

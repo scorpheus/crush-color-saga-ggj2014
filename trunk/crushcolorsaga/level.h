@@ -7,6 +7,9 @@
 
 #include "character.h"
 
+#define SCENEWIDTH 416
+#define SCENEHEIGHT 336
+
 class Character;
 class EndLevel;
 class Background;
@@ -17,11 +20,11 @@ class Level : public QGraphicsScene
 
     public:
         explicit Level(QString level_name, QObject *parent = 0);
+        virtual ~Level();
 
         QColor GetBackgroundColor(QPoint pos);
 
-
-        virtual void CreateLevelPlatform()=0;
+        void CreateLevelPlatform();
         virtual void FinishCreateLevel();
 
     private:
@@ -44,6 +47,7 @@ class Level : public QGraphicsScene
         QPointF physicalToGraphical(const b2Vec2 &point);
         b2Vec2 graphicalToPhysical(const QPointF &point);
         void punchingChecker();
+        void checkCharactersOutside();
 
     public slots:
         void level_changed( const QList<QRectF> & region);
@@ -53,6 +57,7 @@ class Level : public QGraphicsScene
         void characterStatesChanged(Character::States changedStates);
 
     protected:
+        virtual void CreateLevelPlatformImpl(const QSize &size) = 0;
         virtual void timerEvent(QTimerEvent *event);
         b2World*  _world;
 };
