@@ -70,7 +70,7 @@ void Level::FinishCreateLevel()
     bodyBottomBorder->CreateFixture(&boxBottomBorder, 0.0f);
 
     b2BodyDef bodyDefLeftBorder;
-    QPointF centerLeftBorder = QPointF(0, SCENEHEIGHT);
+    QPointF centerLeftBorder = QPointF(0, SCENEHEIGHT/2);
     bodyDefLeftBorder.position = graphicalToPhysical(centerLeftBorder);
     b2Body* bodyLeftBorder = _world->CreateBody(&bodyDefLeftBorder);
     b2PolygonShape boxLeftBorder;
@@ -79,13 +79,22 @@ void Level::FinishCreateLevel()
     bodyLeftBorder->CreateFixture(&boxLeftBorder, 0.0f);
 
     b2BodyDef bodyDefRightBorder;
-    QPointF centerRightBorder = QPointF(SCENEWIDTH, 0);
+    QPointF centerRightBorder = QPointF(SCENEWIDTH, SCENEHEIGHT/2);
     bodyDefRightBorder.position = graphicalToPhysical(centerRightBorder);
     b2Body* bodyRightBorder = _world->CreateBody(&bodyDefRightBorder);
     b2PolygonShape boxRightBorder;
     boxRightBorder.SetAsBox(8/SCALE,
                              SCENEHEIGHT);
     bodyRightBorder->CreateFixture(&boxRightBorder, 0.0f);
+
+    b2BodyDef bodyDefTopBorder;
+    QPointF centerTopBorder = QPointF(SCENEWIDTH/2, 0);
+    bodyDefTopBorder.position = graphicalToPhysical(centerTopBorder);
+    b2Body* bodyTopBorder = _world->CreateBody(&bodyDefTopBorder);
+    b2PolygonShape boxTopBorder;
+    boxTopBorder.SetAsBox((SCENEWIDTH / (2 * SCALE)),
+                          8/SCALE);
+    bodyTopBorder->CreateFixture(&boxTopBorder, 0.0f);
 
     // Register character 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
@@ -186,6 +195,31 @@ void Level::timerEvent(QTimerEvent *event)
         _bodies[i].item->setPos(physicalToGraphical(position) - _bodies[i].delta);
         _bodies[i].item->setRotation(-(angle * 360.0) / (2 * 3.14));
         //inside Step()
+        b2Vec2 vel = _bodies[i].first->GetLinearVelocity();
+
+        Character::States characterStates = ((Character *)(_bodies[i].second))->getStates();
+
+        if(characterStates.testFlag(Character::MovingLeft))
+        {
+          vel.x = -1;
+        }
+        if(characterStates.testFlag(Character::MovingRight))
+        {
+          vel.x = +1;
+        }
+        if(characterStates.testFlag(Character::Idle))
+        {
+          vel.x = 0;
+        }
+        _bodies[i].first->SetLinearVelocity( vel );
+
+        if(characterStates.testFlag(Character::Jumping))
+        {
+          float impulse = _bodies[i].first->GetMass() * 3;
+          _bodies[i].first->ApplyLinearImpulse( b2Vec2(0,impulse), _bodies[i].first->GetWorldCenter(), true);
+          characterStates &= ~Character::Jumping;
+          ((Character *)(_bodies[i].second))->setStates(characterStates);
+        }
     }
 
     _world->ClearForces();
