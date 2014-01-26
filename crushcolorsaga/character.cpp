@@ -12,7 +12,8 @@ Character::Character(int id, Level *level, const QColor &color) :
     _id(id),
     _states(Idle),
     _timerAnimation(new QTimer(this)),
-    _timerShield(new QTimer(this)),
+    _timerParticles(new QTimer(this)),
+    _timerSuperShield(new QTimer(this)),
     _animationIndex(0),
     _level(level),
     _Health(100),
@@ -20,8 +21,13 @@ Character::Character(int id, Level *level, const QColor &color) :
     _color(color)
 {
     _timerAnimation->setInterval(200);
-    connect(_timerAnimation, SIGNAL(timeout()), SLOT(updateAnimation()));
-    connect(_timerShield,    SIGNAL(timeout()), SLOT(updateShield()));
+    connect(_timerAnimation,   SIGNAL(timeout()), SLOT(updateAnimation()));
+
+    _timerParticles->setInterval(75);
+    connect(_timerParticles,   SIGNAL(timeout()), SLOT(updateParticles()));
+
+    _timerSuperShield->setInterval(0);
+    connect(_timerSuperShield, SIGNAL(timeout()), SLOT(updateSuperShield()));
 
     QTimer::singleShot(0, this, SLOT(CheckVulnerabilityColor()));
 }
@@ -73,35 +79,49 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
     switch(_shield)
     {
-    case Normal:
-        break;
-    case Stronger:
-    {
-        QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
-        pixmapShield.fill(_color);
-        pixmapShield.setMask(pixmap.mask());
-        painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
-    }
-        break;
-    case VeryStronger:
-    {
-        QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
-        pixmapShield.fill(Qt::transparent);
-        QPainter subPainter(&pixmapShield);
-        subPainter.drawPixmap(0, 0, QPixmap(QString(":/models/particle_%1").arg(_particleIndex)));
-        subPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-        subPainter.fillRect(0, 0, pixmap.width(), pixmap.height(), _color);
-        subPainter.end();
-        painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
-    }
-        break;
-    case Surhuman:
-    {
-        QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
-        pixmapShield.fill(_surhumanShieldCurrentColor);
-        pixmapShield.setMask(pixmap.mask());
-        painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
-    }
+        case Normal:
+            break;
+        case Stronger:
+        {
+            QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+            pixmapShield.fill(_color);
+            pixmapShield.setMask(pixmap.mask());
+            painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+        }
+            break;
+        case VeryStronger:
+        {
+            QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+            pixmapShield.fill(_color);
+            pixmapShield.setMask(pixmap.mask());
+            painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+
+            pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+            pixmapShield.fill(Qt::transparent);
+            QPainter subPainter(&pixmapShield);
+            subPainter.drawPixmap(0, 0, QPixmap(QString(":/models/particle_%1").arg(_particleIndex)));
+            subPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            subPainter.fillRect(0, 0, pixmap.width(), pixmap.height(), _color);
+            subPainter.end();
+            painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+        }
+            break;
+        case Surhuman:
+        {
+            QPixmap pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+            pixmapShield.fill(_surhumanShieldCurrentColor);
+            pixmapShield.setMask(pixmap.mask());
+            painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+
+            pixmapShield = QPixmap(pixmap.width(), pixmap.height());
+            pixmapShield.fill(Qt::transparent);
+            QPainter subPainter(&pixmapShield);
+            subPainter.drawPixmap(0, 0, QPixmap(QString(":/models/particle_%1").arg(_particleIndex)));
+            subPainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+            subPainter.fillRect(0, 0, pixmap.width(), pixmap.height(), _surhumanShieldCurrentColor);
+            subPainter.end();
+            painter->drawPixmap(-2, -2, pixmap.width()+4, pixmap.height()+4, pixmapShield);
+        }
         break;
     }
 
@@ -136,23 +156,21 @@ void Character::updateAnimation()
     update();
 }
 
-void Character::updateShield()
+void Character::updateParticles()
 {
-    if(_shield == Surhuman)
+    _particleIndex = (_particleIndex + 1) % 11;
+    update();
+}
+
+void Character::updateSuperShield()
+{
+    QDateTime now = QDateTime::currentDateTimeUtc();
+    qint64 delta = _lastShieldUpdate.msecsTo(now);
+    if(delta)
     {
-        QDateTime now = QDateTime::currentDateTimeUtc();
-        qint64 delta = _lastShieldUpdate.msecsTo(now);
-        if(delta)
-        {
-            _surhumanShieldCurrentColor = QColor::fromHsv((_surhumanShieldCurrentColor.hue() + delta * 2) % 360, 255, 255);
-            update();
-            _lastShieldUpdate = now;
-        }
-    }
-    else if(_shield == VeryStronger)
-    {
-        _particleIndex = (_particleIndex + 1) % 11;
+        _surhumanShieldCurrentColor = QColor::fromHsv((_surhumanShieldCurrentColor.hue() + delta * 2) % 360, 255, 255);
         update();
+        _lastShieldUpdate = now;
     }
 }
 
@@ -230,19 +248,20 @@ void Character::CheckVulnerabilityColor()
 
     if(newShieldState != _shield)
     {
-        _timerShield->stop();
+        _timerParticles->stop();
+        _timerSuperShield->stop();
         _shield = newShieldState;
 
         if(_shield == Surhuman)
         {
             _lastShieldUpdate = QDateTime::currentDateTimeUtc();
             _surhumanShieldCurrentColor = Qt::red;
-            _timerShield->start(0);
+            _timerSuperShield->start();
         }
-        else if(_shield == VeryStronger)
+        if(_shield >= VeryStronger)
         {
             _particleIndex = 0;
-            _timerShield->start(75);
+            _timerParticles->start();
         }
 
         update();
