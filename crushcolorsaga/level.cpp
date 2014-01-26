@@ -100,7 +100,7 @@ void Level::FinishCreateLevel()
     }
 
     // Register character 1
-    character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
+    character1 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character1);
     connect(character1, SIGNAL(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)),
                         SLOT(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)));
     connect(character1, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged(Character::States)));
@@ -129,7 +129,7 @@ void Level::FinishCreateLevel()
     _bodies << sprite1;
 
     // Register character 2
-    character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
+    character2 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character2);
     connect(character2, SIGNAL(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)),
                         SLOT(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)));
     connect(character2, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged(Character::States)));
@@ -396,7 +396,7 @@ void Level::checkCharactersOutside()
                 newPosition = pos + QPointF(0, SCENEHEIGHT);
             }
 
-            if(not newPosition.isNull())
+            if(! newPosition.isNull())
             {
                 _bodies[i].body->SetTransform(graphicalToPhysical(newPosition + _bodies[i].delta), 0);
             }
