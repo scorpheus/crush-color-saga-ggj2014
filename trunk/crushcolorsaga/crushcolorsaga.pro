@@ -28,7 +28,6 @@ SOURCES += main.cpp\
     fireball.cpp \
     soundmanager.cpp \
     blowup.cpp\
-    soundmanager.cpp \
     level_3.cpp \
     movingprojectorbackground_level3.cpp \
     wikimediaimagebackground.cpp
@@ -53,6 +52,7 @@ HEADERS  += mainwindow.h \
     level_3.h \
     movingprojectorbackground_level3.h \
     wikimediaimagebackground.h
+
 FORMS    += mainwindow.ui
 
 RESOURCES += \
