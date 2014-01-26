@@ -21,15 +21,21 @@ class Character : public QObject, public QGraphicsItem
 
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
+        inline virtual int type() const
+        { return UserType + 101; }
+
     public:
         typedef enum
         {
-            Idle         =0x00,
-            MovingLeft   =0x01,
-            MovingRight  =0x02,
-            HittingLeft  =0x04,
-            HittingRight =0x08,
-            Jumping      =0x10
+            Idle          =0x00,
+            MovingLeft    =0x01,
+            MovingRight   =0x02,
+            HittingLeft   =0x04,
+            HittingRight  =0x08,
+            ThrowingLeft  =0x10,
+            ThrowingRight =0x20,
+            Attack        =HittingLeft | HittingRight | ThrowingLeft | ThrowingRight,
+            Jumping       =0x40
         } State;
 
         Q_DECLARE_FLAGS(States, State);
@@ -45,6 +51,9 @@ class Character : public QObject, public QGraphicsItem
         int _Health;
 
         Character::States getStates();
+
+        inline ShieldState getShield() const
+        { return _shield; }
 
     signals:
         void registerFireBall(QGraphicsItem *fireBall);

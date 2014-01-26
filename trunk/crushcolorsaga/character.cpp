@@ -36,30 +36,25 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     QPixmap pixmap;
     painter->translate(2, 2);
 
-    if(_states.testFlag(HittingRight))
+    if(_states.testFlag(ThrowingRight))
     {
         painter->translate(32, 0);
         painter->scale(-1, 1);
-
-        if(_shield >= VeryStronger)
-        {
-            pixmap = QPixmap(QString(":/models/hero%1_bubble").arg(_id));
-        }
-        else
-        {
-            pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
-        }
+        pixmap = QPixmap(QString(":/models/hero%1_bubble").arg(_id));
+    }
+    else if(_states.testFlag(ThrowingLeft))
+    {
+        pixmap = QPixmap(QString(":/models/hero%1_bubble").arg(_id));
+    }
+    else if(_states.testFlag(HittingRight))
+    {
+        painter->translate(32, 0);
+        painter->scale(-1, 1);
+        pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
     }
     else if(_states.testFlag(HittingLeft))
     {
-        if(_shield >= VeryStronger)
-        {
-            pixmap = QPixmap(QString(":/models/hero%1_bubble").arg(_id));
-        }
-        else
-        {
-            pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
-        }
+        pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
     }
     else if(_states.testFlag(MovingLeft))
     {
@@ -151,9 +146,8 @@ void Character::setStates(States states)
         _timerAnimation->stop();
         _animationIndex = 0;
 
-        if(_shield >= VeryStronger &&
-           ((! _states.testFlag(HittingLeft) && states.testFlag(HittingLeft))) ||
-           ((! _states.testFlag(HittingRight) && states.testFlag(HittingRight))))
+        if((!_states.testFlag(ThrowingLeft) && states.testFlag(ThrowingLeft)) ||
+           (!_states.testFlag(ThrowingRight) && states.testFlag(ThrowingRight)))
         {
             FireBall *ball = new FireBall(_color, _shield == Surhuman,
                                           states.testFlag(HittingLeft) ? Qt::RightToLeft : Qt::LeftToRight);

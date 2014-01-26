@@ -56,7 +56,7 @@ void Level::FinishCreateLevel()
             b2PolygonShape boxPlatform;
             boxPlatform.SetAsBox(platform->boundingRect().width() / (2.0 * SCALE),
                                  platform->boundingRect().height() / (2.0 * SCALE));
-            bodyPlatform->CreateFixture(&boxPlatform, 0.0f);
+            bodyPlatform->CreateFixture(&boxPlatform, 0.0f)->SetFriction(0.3);
         }
     }
 
@@ -115,7 +115,7 @@ void Level::FinishCreateLevel()
     b2FixtureDef fixtureDefChar1;
     fixtureDefChar1.shape = &dynamicBoxChar1;
     fixtureDefChar1.density = 25.0f;
-    fixtureDefChar1.friction = 0.0f;
+    fixtureDefChar1.friction = 0.3f;
     bodyChar1->CreateFixture(&fixtureDefChar1);
 
     DynamicSprite sprite1;
@@ -143,7 +143,7 @@ void Level::FinishCreateLevel()
     b2FixtureDef fixtureDefChar2;
     fixtureDefChar2.shape = &dynamicBoxChar2;
     fixtureDefChar2.density = 25.0f;
-    fixtureDefChar2.friction = 0.0f;
+    fixtureDefChar2.friction = 0.3f;
     bodyChar2->CreateFixture(&fixtureDefChar2);
 
     DynamicSprite sprite2;
@@ -160,9 +160,7 @@ void Level::FinishCreateLevel()
     addItem(health2);
     health2->moveBy(312, 15);
 
-    InputManager *inputManager = new InputManager(this);
-    connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
-    connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
+    new InputManager(character1, character2, this);
 
     //_background = new Background();
      _background = new MovingProjectorBackground();
@@ -186,6 +184,29 @@ b2Vec2 Level::graphicalToPhysical(const QPointF &point)
 
 void Level::timerEvent(QTimerEvent *event)
 {
+    for(int i=0 ; i<_bodies.count() ; i++)
+    {
+        if(_bodies[i].item->type() == QGraphicsItem::UserType + 101)
+        {
+            Character *character = (Character *)_bodies[i].item;
+            Character::States characterState = character->getStates();
+
+            b2Vec2 vel = _bodies[i].body->GetLinearVelocity();
+            vel.x = 0;
+
+            if(characterState.testFlag(Character::MovingLeft))
+            {
+                vel.x -= 0.3;
+            }
+            if(characterState.testFlag(Character::MovingRight))
+            {
+                vel.x += 0.3;
+            }
+
+            _bodies[i].body->SetLinearVelocity(vel);
+        }
+    }
+
     _world->Step(B2_TIMESTEP, B2_VELOCITY_ITERATIONS, B2_POSITION_ITERATIONS);
 
     for(int i=0 ; i<_bodies.count() ; i++)
@@ -273,21 +294,6 @@ void Level::characterStatesChanged(Character::States changedStates)
                 float impulse = _bodies[i].body->GetMass() * 0.55;
                 _bodies[i].body->ApplyLinearImpulse(b2Vec2(0,impulse), _bodies[i].body->GetWorldCenter(), true);
             }
-
-            b2Vec2 vel = _bodies[i].body->GetLinearVelocity();
-            vel.x = 0;
-
-            if(characterState.testFlag(Character::MovingLeft))
-            {
-                vel.x -= 0.15;
-            }
-            if(characterState.testFlag(Character::MovingRight))
-            {
-                vel.x += 0.15;
-            }
-
-            _bodies[i].body->SetLinearVelocity(vel);
-
         }
     }
 }
