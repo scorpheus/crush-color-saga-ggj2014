@@ -99,7 +99,7 @@ void Level::FinishCreateLevel()
     // Register character 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
     connect(character1, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
-    connect(character1, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged()));
+    connect(character1, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged(Character::States)));
     addItem(character1);
 
     b2BodyDef bodyDefChar1;
@@ -114,7 +114,7 @@ void Level::FinishCreateLevel()
 
     b2FixtureDef fixtureDefChar1;
     fixtureDefChar1.shape = &dynamicBoxChar1;
-    fixtureDefChar1.density = 10.0f;
+    fixtureDefChar1.density = 1.0f;
     fixtureDefChar1.friction = 0.0f;
     bodyChar1->CreateFixture(&fixtureDefChar1);
 
@@ -127,7 +127,7 @@ void Level::FinishCreateLevel()
     // Register character 1
     character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
     connect(character2, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
-    connect(character2, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged()));
+    connect(character2, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged(Character::States)));
     addItem(character2);
 
     b2BodyDef bodyDefChar2;
@@ -142,7 +142,7 @@ void Level::FinishCreateLevel()
 
     b2FixtureDef fixtureDefChar2;
     fixtureDefChar2.shape = &dynamicBoxChar2;
-    fixtureDefChar2.density = 10.0f;
+    fixtureDefChar2.density = 1.0f;
     fixtureDefChar2.friction = 0.0f;
     bodyChar2->CreateFixture(&fixtureDefChar2);
 
@@ -194,32 +194,6 @@ void Level::timerEvent(QTimerEvent *event)
         float32 angle = _bodies[i].body->GetAngle();
         _bodies[i].item->setPos(physicalToGraphical(position) - _bodies[i].delta);
         _bodies[i].item->setRotation(-(angle * 360.0) / (2 * 3.14));
-        //inside Step()
-        b2Vec2 vel = _bodies[i].first->GetLinearVelocity();
-
-        Character::States characterStates = ((Character *)(_bodies[i].second))->getStates();
-
-        if(characterStates.testFlag(Character::MovingLeft))
-        {
-          vel.x = -1;
-        }
-        if(characterStates.testFlag(Character::MovingRight))
-        {
-          vel.x = +1;
-        }
-        if(characterStates.testFlag(Character::Idle))
-        {
-          vel.x = 0;
-        }
-        _bodies[i].first->SetLinearVelocity( vel );
-
-        if(characterStates.testFlag(Character::Jumping))
-        {
-          float impulse = _bodies[i].first->GetMass() * 3;
-          _bodies[i].first->ApplyLinearImpulse( b2Vec2(0,impulse), _bodies[i].first->GetWorldCenter(), true);
-          characterStates &= ~Character::Jumping;
-          ((Character *)(_bodies[i].second))->setStates(characterStates);
-        }
     }
 
     _world->ClearForces();
@@ -275,6 +249,7 @@ void Level::registerFireBall(QGraphicsItem *fireBall)
     fixtureDefFireBall.friction = 0.0f;
     bodyFireBall->CreateFixture(&fixtureDefFireBall);
 
+    // TODO : set velocity and destruction power according to superPower property (and direction)
     bodyFireBall->SetLinearVelocity(b2Vec2(1, 0));
 
     DynamicSprite spriteBall;
@@ -284,27 +259,35 @@ void Level::registerFireBall(QGraphicsItem *fireBall)
     _bodies << spriteBall;
 }
 
-void Level::characterStatesChanged()
+void Level::characterStatesChanged(Character::States changedStates)
 {
-    b2Vec2 vel(0, 0);
-
     Character *character = (Character *)sender();
     Character::States characterState = character->getStates();
-
-    if(characterState.testFlag(Character::MovingLeft))
-    {
-        vel.x -= 0.7;
-    }
-    if(characterState.testFlag(Character::MovingRight))
-    {
-        vel.x += 0.7;
-    }
 
     for(int i=0 ; i<_bodies.count() ; i++)
     {
         if(_bodies[i].item == character)
         {
+            if(changedStates.testFlag(Character::Jumping) && characterState.testFlag(Character::Jumping))
+            {
+                float impulse = _bodies[i].body->GetMass() * 6;
+                _bodies[i].body->ApplyLinearImpulse(b2Vec2(0,impulse), _bodies[i].body->GetWorldCenter(), true);
+            }
+
+            b2Vec2 vel = _bodies[i].body->GetLinearVelocity();
+            vel.x = 0;
+
+            if(characterState.testFlag(Character::MovingLeft))
+            {
+                vel.x -= 0.7;
+            }
+            if(characterState.testFlag(Character::MovingRight))
+            {
+                vel.x += 0.7;
+            }
+
             _bodies[i].body->SetLinearVelocity(vel);
+
         }
     }
 }
