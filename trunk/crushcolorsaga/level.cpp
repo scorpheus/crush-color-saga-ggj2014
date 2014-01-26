@@ -12,6 +12,7 @@
 #include "platform.h"
 #include "fireball.h"
 #include "blowup.h"
+#include "soundmanager.h"
 
 #include <QElapsedTimer>
 #include <QDebug>
@@ -172,6 +173,9 @@ void Level::FinishCreateLevel()
 
     if(g_MainWindow->_current_level == g_MainWindow->choice_level_2)
         _background = new MovingProjectorBackground_Level3(_level_name);
+    else
+    if(g_MainWindow->_current_level == g_MainWindow->choice_level_3)
+        _background = new WikimediaImageBackground();
     else
         _background = new MovingProjectorBackground();
 
@@ -339,6 +343,7 @@ void Level::timerEvent(QTimerEvent *event)
                 QRectF enemyRect = enemy->boundingRect().translated(enemy->pos());
                 if(fireRect.intersects(enemyRect))
                 {
+                    SoundManager::PlayHitTaken();
                     int delta = fireBall->isSuperPower() ? 10 : 5;
                     enemy->setCharacterHealth(enemy->getCharacterHealth() - delta);
                 }
@@ -347,6 +352,9 @@ void Level::timerEvent(QTimerEvent *event)
                 delete sprite.item;
                 _world->DestroyBody(sprite.body);
                 iterator.remove();
+
+                // play explosion
+                SoundManager::PlayExplosion();
             }
         }
     }
@@ -365,7 +373,9 @@ void Level::level_changed( const QList<QRectF> & region )
         if(!_end_level)
         {
             _end_level = new EndLevel(this, "Player 2: YOU WON !!");
+            _end_level->hide();
             addItem(_end_level);
+            _end_level->show();
             _end_level->timer->start();
 
         }
@@ -376,7 +386,9 @@ void Level::level_changed( const QList<QRectF> & region )
         if(!_end_level)
         {
             _end_level = new EndLevel(this, "Player 1: YOU WON !!");
+            _end_level->hide();
             addItem(_end_level);
+            _end_level->show();
             _end_level->timer->start();
 
         }

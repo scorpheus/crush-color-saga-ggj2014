@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     music = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/background_sound"));
     connect(music, SIGNAL(aboutToFinish()), this, SLOT(restartVideo()));
-  //  music->play();
+    music->play();
 }
 
 MainWindow::~MainWindow()
@@ -69,6 +69,9 @@ void MainWindow::NextLevel()
            _current_level = choice_level_2;
         break;
         case choice_level_2:
+            _current_level = choice_level_3;
+        break;
+        case choice_level_3:
             _current_level = choice_level_1;
         break;
     }

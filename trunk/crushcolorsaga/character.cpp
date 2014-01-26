@@ -45,7 +45,7 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
 
     if(_states.testFlag(Jumping))
     {
-        if(not _lastDirectionLeft)
+        if(! _lastDirectionLeft)
         {
             painter->translate(32, 0);
             painter->scale(-1, 1);
