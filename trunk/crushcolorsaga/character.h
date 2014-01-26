@@ -72,13 +72,16 @@ class Character : public QObject, public QGraphicsItem
 
         void CheckVulnerabilityColor();
 
-        void updateShield();
+        void updateParticles();
+
+        void updateSuperShield();
 
     private:
         int _id;
         States _states;
         QTimer *_timerAnimation;
-        QTimer *_timerShield;
+        QTimer *_timerParticles;
+        QTimer *_timerSuperShield;
         int _animationIndex;
         int _particleIndex;
         Level *_level;
