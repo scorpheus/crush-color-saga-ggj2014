@@ -110,7 +110,8 @@ void Level::FinishCreateLevel()
     connect(inputManager, SIGNAL(state1(Character::States)), character1, SLOT(setStates(Character::States)));
     connect(inputManager, SIGNAL(state2(Character::States)), character2, SLOT(setStates(Character::States)));
 
-    _background = new Background(); //MovingProjectorBackground();
+    //_background = new Background();
+     _background = new MovingProjectorBackground();
     //_background = new WikimediaImageBackground();
     _background->setZValue(-100);
     addItem(_background);
