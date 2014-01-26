@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QGraphicsScene>
 
+#include "fireball.h"
+
 Character::Character(int id, Level *level, const QColor &color) :
     _id(id),
     _states(Idle),
@@ -37,11 +39,26 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     {
         painter->translate(32, 0);
         painter->scale(-1, 1);
-        pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
+
+        if(_shield >= VeryStronger)
+        {
+            pixmap = QPixmap(QString(":/models/hero%1_bubble").arg(_id));
+        }
+        else
+        {
+            pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
+        }
     }
     else if(_states.testFlag(HittingLeft))
     {
-        pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
+        if(_shield >= VeryStronger)
+        {
+            pixmap = QPixmap(QString(":/models/hero%1_bubble").arg(_id));
+        }
+        else
+        {
+            pixmap = QPixmap(QString(":/models/hero%1_hit").arg(_id));
+        }
     }
     else if(_states.testFlag(MovingLeft))
     {
@@ -132,6 +149,18 @@ void Character::setStates(States states)
     {
         _timerAnimation->stop();
         _animationIndex = 0;
+
+        if(_shield >= VeryStronger &&
+           ((not _states.testFlag(HittingLeft) && states.testFlag(HittingLeft))) ||
+           ((not _states.testFlag(HittingRight) && states.testFlag(HittingRight))))
+        {
+            FireBall *ball = new FireBall(_color, _shield == Surhuman,
+                                          states.testFlag(HittingLeft) ? Qt::RightToLeft : Qt::LeftToRight);
+            ball->setPos(QRectF(pos(), boundingRect().size()).center() +
+                         QPointF(states.testFlag(HittingLeft) ? -14 : 14, 0));
+            emit registerFireBall(ball);
+        }
+
         _states = states;
 
         if(_states.testFlag(MovingLeft) || _states.testFlag(MovingRight))

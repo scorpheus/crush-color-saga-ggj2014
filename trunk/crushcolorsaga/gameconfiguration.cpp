@@ -10,6 +10,8 @@
 #include <QLabel>
 #include <QMovie>
 #include <QGraphicsProxyWidget>
+#include <QtCore/qmath.h>
+
 
 #include "mainwindow.h"
 extern MainWindow* g_MainWindow;
@@ -193,12 +195,12 @@ void GameConfiguration::SendFlyingCat()
     QTimeLine* timer = new QTimeLine(10000);
     timer->setFrameRange(0, 100);
 
-    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
+    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation(this);
     animation->setItem(_flying_cat);
     animation->setTimeLine(timer);
 
     for (float i = 0.0; i < 200.0; ++i)
-        animation->setPosAt (i / 200.0, QPointF(i*cos(i/200.0)*2.0-20.0, 1.5*i/cos(200.0+i/100.0)-40.0));
+        animation->setPosAt (i / 200.0, QPointF(i*qCos(i/200.0)*2.0-20.0, 1.5*i/qCos(200.0+i/100.0)-40.0));
     timer->start();
 }
 

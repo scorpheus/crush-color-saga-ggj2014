@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     end_level.cpp \
     movingprojectorbackground.cpp \
     simplevariantanimation.cpp \
-    gameconfiguration.cpp
+    gameconfiguration.cpp \
+    fireball.cpp
 
 HEADERS  += mainwindow.h \
     character.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     end_level.h \
     movingprojectorbackground.h \
     simplevariantanimation.h \
-    gameconfiguration.h
+    gameconfiguration.h \
+    fireball.h
 
 FORMS    += mainwindow.ui
 

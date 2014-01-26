@@ -26,6 +26,14 @@
         <file alias="bg_menu">assets/bg_menu.png</file>
         <file alias="portait_char_1">assets/spr_portrait_hero1.png</file>
         <file alias="portait_char_2">assets/spr_portrait_hero2.png</file>
+        <file alias="bubble_0">assets/spr_bouboule_noire_1.png</file>
+        <file alias="bubble_1">assets/spr_bouboule_noire_2.png</file>
+        <file alias="bubble_2">assets/spr_bouboule_noire_3.png</file>
+        <file alias="bubble_3">assets/spr_bouboule_noire_4.png</file>
+        <file alias="bubble_4">assets/spr_bouboule_noire_5.png</file>
+        <file alias="bubble_5">assets/spr_bouboule_noire_6.png</file>
+        <file alias="hero1_bubble">assets/spr_hero1_bouboule02.png</file>
+        <file alias="hero2_bubble">assets/spr_hero2_bouboule01.png</file>
         <file alias="flying_cat">assets/flying_cat.gif</file>
     </qresource>
 </RCC>

@@ -23,19 +23,22 @@ class Level : public QGraphicsScene
         virtual void FinishCreateLevel();
 
     private:
-            Character *character1;
-            Character *character2;
-            EndLevel* _end_level;
-            Background *_background;
-            QString _level_name;
-            QList<QPair<b2Body *, QGraphicsItem *> > _bodies;
+        Character *character1;
+        Character *character2;
+        EndLevel* _end_level;
+        Background *_background;
+        QString _level_name;
+        QList<QPair<b2Body *, QGraphicsItem *> > _bodies;
 
-private:
-            QPointF physicalToGraphical(const b2Vec2 &point);
-            b2Vec2 graphicalToPhysical(const QPointF &point);
+    private:
+        QPointF physicalToGraphical(const b2Vec2 &point);
+        b2Vec2 graphicalToPhysical(const QPointF &point);
 
-        public slots:
-            void level_changed( const QList<QRectF> & region);
+    public slots:
+        void level_changed( const QList<QRectF> & region);
+
+    private slots:
+        void registerFireBall(QGraphicsItem *fireBall);
 
     protected:
         virtual void timerEvent(QTimerEvent *event);
