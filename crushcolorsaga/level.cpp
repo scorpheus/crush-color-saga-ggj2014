@@ -268,11 +268,11 @@ void Level::punchingChecker()
                 {
                     damageDone = 1;
                 }
-                b2Vec2 vel = _bodies[1].body->GetLinearVelocity();
+                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
                 vel.y = 10.0;
                 vel.x = -10.0;
-                _bodies[1].body->SetLinearVelocity( vel );
-                character2->setCharacterHealth(character2->getCharacterHealth() - damageDone);
+                _bodies[0].body->SetLinearVelocity( vel );
+                character1->setCharacterHealth(character1->getCharacterHealth() - damageDone);
                // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
             else if(((Character*)_bodies[0].item)->getStates().testFlag(Character::HittingRight))
@@ -285,11 +285,11 @@ void Level::punchingChecker()
                 {
                     damageDone = 1;
                 }
-                b2Vec2 vel = _bodies[0].body->GetLinearVelocity();
+                b2Vec2 vel = _bodies[1].body->GetLinearVelocity();
                 vel.y = 10.0;
                 vel.x = 10.0;
-                _bodies[0].body->SetLinearVelocity( vel );
-                character1->setCharacterHealth(character1->getCharacterHealth() - damageDone);
+                _bodies[1].body->SetLinearVelocity( vel );
+                character2->setCharacterHealth(character2->getCharacterHealth() - damageDone);
                // qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
             }
         }
