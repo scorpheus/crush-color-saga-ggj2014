@@ -71,7 +71,7 @@ void Level::FinishCreateLevel()
             b2PolygonShape boxPlatform;
             boxPlatform.SetAsBox(platform->boundingRect().width() / (2.0 * SCALE),
                                  platform->boundingRect().height() / (2.0 * SCALE));
-            bodyPlatform->CreateFixture(&boxPlatform, 0.0f)->SetFriction(0.3);
+            bodyPlatform->CreateFixture(&boxPlatform, 0.0f)->SetFriction(0.0);
         }
     }
 
