@@ -11,20 +11,16 @@ class InputManager : public QObject
     Q_OBJECT
 
     public:
-        explicit InputManager(QObject *parent = 0);
+        explicit InputManager(Character *character1, Character *character2, QObject *parent = 0);
 
         virtual bool eventFilter(QObject *, QEvent *);
-
-    signals:
-        void state1(Character::States states);
-        void state2(Character::States states);
 
     private slots:
         void stopHit();
 
     private:
-        Character::States _states1;
-        Character::States _states2;
+        Character *_character1;
+        Character *_character2;
         QTimer *_timerStopHit1;
         QTimer *_timerStopHit2;
 };

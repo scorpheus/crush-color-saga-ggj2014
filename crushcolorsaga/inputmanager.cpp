@@ -6,10 +6,10 @@
 #include "mainwindow.h"
 extern MainWindow* g_MainWindow;
 
-InputManager::InputManager(QObject *parent) :
+InputManager::InputManager(Character *character1, Character *character2, QObject *parent) :
     QObject(parent),
-    _states1(Character::Idle),
-    _states2(Character::Idle),
+    _character1(character1),
+    _character2(character2),
     _timerStopHit1(new QTimer(this)),
     _timerStopHit2(new QTimer(this))
 {
@@ -25,15 +25,15 @@ void InputManager::stopHit()
 {
     if(sender() == _timerStopHit1)
     {
-        _states1 &= ~Character::HittingLeft;
-        _states1 &= ~Character::HittingRight;
-        emit state1(_states1);
+        Character::States states1 = _character1->getStates();
+        states1 &= ~Character::Attack;
+        _character1->setStates(states1);
     }
     else if(sender() == _timerStopHit2)
     {
-        _states2 &= ~Character::HittingLeft;
-        _states2 &= ~Character::HittingRight;
-        emit state2(_states2);
+        Character::States states2 = _character2->getStates();
+        states2 &= ~Character::Attack;
+        _character2->setStates(states2);
     }
 }
 
@@ -47,65 +47,89 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             Qt::Key key = Qt::Key(keyEvent->key());
             if(key == Qt::Key_Up)
             {
-                _states1 |= Character::Jumping;
-                emit state1(_states1);
+                _character1->setStates(_character1->getStates() | Character::Jumping);
                 return true;
             }
             else if(key == Qt::Key_Left)
             {
-                _states1 |= Character::MovingLeft;
-                emit state1(_states1);
+                _character1->setStates(_character1->getStates() | Character::MovingLeft);
                 return true;
             }
             else if(key == Qt::Key_Right)
             {
-                _states1 |= Character::MovingRight;
-                emit state1(_states1);
+                _character1->setStates(_character1->getStates() | Character::MovingRight);
                 return true;
             }
             else if(key == Qt::Key_Enter)
             {
-                if(_states1.testFlag(Character::MovingLeft))
+                Character::States states1 = _character1->getStates();
+                if(states1.testFlag(Character::MovingLeft))
                 {
-                    _states1 |= Character::HittingLeft;
+                    if(_character1->getShield() >= Character::VeryStronger)
+                    {
+                        states1 |= Character::ThrowingLeft;
+                    }
+                    else
+                    {
+                        states1 |= Character::HittingLeft;
+                    }
                 }
                 else
                 {
-                    _states1 |= Character::HittingRight;
+                    if(_character1->getShield() >= Character::VeryStronger)
+                    {
+                        states1 |= Character::ThrowingRight;
+                    }
+                    else
+                    {
+                        states1 |= Character::HittingRight;
+                    }
                 }
-                emit state1(_states1);
+                _character1->setStates(states1);
                 _timerStopHit1->start();
                 return true;
             }
             else if(key == Qt::Key_Z)
             {
-                _states2 |= Character::Jumping;
-                emit state2(_states2);
+                _character2->setStates(_character2->getStates() | Character::Jumping);
                 return true;
             }
             else if(key == Qt::Key_Q)
             {
-                _states2 |= Character::MovingLeft;
-                emit state2(_states2);
+                _character2->setStates(_character2->getStates() | Character::MovingLeft);
                 return true;
             }
             else if(key == Qt::Key_D)
             {
-                _states2 |= Character::MovingRight;
-                emit state2(_states2);
+                _character2->setStates(_character2->getStates() | Character::MovingRight);
                 return true;
             }
             else if(key == Qt::Key_Space)
             {
-                if(_states2.testFlag(Character::MovingLeft))
+                Character::States states2 = _character2->getStates();
+                if(states2.testFlag(Character::MovingLeft))
                 {
-                    _states2 |= Character::HittingLeft;
+                    if(_character2->getShield() >= Character::VeryStronger)
+                    {
+                        states2 |= Character::ThrowingLeft;
+                    }
+                    else
+                    {
+                        states2 |= Character::HittingLeft;
+                    }
                 }
                 else
                 {
-                    _states2 |= Character::HittingRight;
+                    if(_character2->getShield() >= Character::VeryStronger)
+                    {
+                        states2 |= Character::ThrowingRight;
+                    }
+                    else
+                    {
+                        states2 |= Character::HittingRight;
+                    }
                 }
-                emit state2(_states2);
+                _character2->setStates(states2);
                 _timerStopHit2->start();
                 return true;
             }
@@ -119,52 +143,42 @@ bool InputManager::eventFilter(QObject *object, QEvent *event)
             Qt::Key key = Qt::Key(keyEvent->key());
             if(key == Qt::Key_Up)
             {
-                _states1 &= ~Character::Jumping;
-                emit state1(_states1);
+                _character1->setStates(_character1->getStates() & ~Character::Jumping);
                 return true;
             }
             else if(key == Qt::Key_Left)
             {
-                _states1 &= ~Character::MovingLeft;
-                emit state1(_states1);
+                _character1->setStates(_character1->getStates() & ~Character::MovingLeft);
                 return true;
             }
             else if(key == Qt::Key_Right)
             {
-                _states1 &= ~Character::MovingRight;
-                emit state1(_states1);
+                _character1->setStates(_character1->getStates() & ~Character::MovingRight);
                 return true;
             }
             else if(key == Qt::Key_Enter)
             {
-                _states1 &= ~Character::HittingLeft;
-                _states1 &= ~Character::HittingRight;
-                emit state1(_states1);
+                _character1->setStates(_character1->getStates() & ~Character::Attack);
                 return true;
             }
             else if(key == Qt::Key_Z)
             {
-                _states2 &= ~Character::Jumping;
-                emit state2(_states2);
+                _character2->setStates(_character2->getStates() & ~Character::Jumping);
                 return true;
             }
             else if(key == Qt::Key_Q)
             {
-                _states2 &= ~Character::MovingLeft;
-                emit state2(_states2);
+                _character2->setStates(_character2->getStates() & ~Character::MovingLeft);
                 return true;
             }
             else if(key == Qt::Key_D)
             {
-                _states2 &= ~Character::MovingRight;
-                emit state2(_states2);
+                _character2->setStates(_character2->getStates() & ~Character::MovingRight);
                 return true;
             }
             else if(key == Qt::Key_Space)
             {
-                _states2 &= ~Character::HittingLeft;
-                _states2 &= ~Character::HittingRight;
-                emit state2(_states2);
+                _character2->setStates(_character2->getStates() & ~(Character::Attack));
                 return true;
             }
       /*      else if(key == Qt::Key_N)
