@@ -26,5 +26,6 @@
         <file alias="bg_menu">assets/bg_menu.png</file>
         <file alias="portait_char_1">assets/spr_portrait_hero1.png</file>
         <file alias="portait_char_2">assets/spr_portrait_hero2.png</file>
+        <file alias="flying_cat">assets/flying_cat.gif</file>
     </qresource>
 </RCC>

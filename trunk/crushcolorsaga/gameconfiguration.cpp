@@ -5,6 +5,11 @@
 #include <QTimer>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsPixmapItem>
+#include <QTimeLine>
+#include <QGraphicsItemAnimation>
+#include <QLabel>
+#include <QMovie>
+#include <QGraphicsProxyWidget>
 
 #include "mainwindow.h"
 extern MainWindow* g_MainWindow;
@@ -166,7 +171,35 @@ GameConfiguration::GameConfiguration(QObject *parent) :
     addItem(_text_item_validate);
     _text_item_validate->setScale(3.0);
     QRectF validate_rect = _text_item_validate->boundingRect();
-    _text_item_validate->setPos(width()*0.45 - validate_rect.width()*0.6, height()*0.7-validate_rect.height());
+    _text_item_validate->setPos(width()*0.42 - validate_rect.width()*0.5, height()*0.7-validate_rect.height());
+
+    // add flying at
+    QTimeLine* timer = new QTimeLine(rand()%2000);
+    timer->connect(timer, SIGNAL(finished()), this, SLOT(SendFlyingCat()));
+    timer->start();
+}
+
+void GameConfiguration::SendFlyingCat()
+{
+    QLabel *gif_anim = new QLabel();
+    gif_anim->setAttribute( Qt::WA_TranslucentBackground, true );
+    QMovie *movie = new QMovie(":/models/flying_cat");
+    gif_anim->setMovie(movie);
+    movie->start();
+    QGraphicsProxyWidget *_flying_cat = addWidget(gif_anim);
+
+    //QGraphicsPixmapItem* _flying_cat = addPixmap(QPixmap(QString(":/models/portait_char_%1").arg(_id_character1)));
+    _flying_cat->setPos(-80, -70);
+    QTimeLine* timer = new QTimeLine(10000);
+    timer->setFrameRange(0, 100);
+
+    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
+    animation->setItem(_flying_cat);
+    animation->setTimeLine(timer);
+
+    for (float i = 0.0; i < 200.0; ++i)
+        animation->setPosAt (i / 200.0, QPointF(i*cos(i/200.0)*2.0-20.0, 1.5*i/cos(200.0+i/100.0)-40.0));
+    timer->start();
 }
 
 void GameConfiguration::drawBackground ( QPainter * painter, const QRectF & rect )

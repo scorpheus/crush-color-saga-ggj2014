@@ -31,6 +31,7 @@ private:
 
 private slots:
     void updateAnimation();
+    void SendFlyingCat();
 
 private:
     QTimer *_timerAnimation;
