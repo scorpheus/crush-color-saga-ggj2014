@@ -19,7 +19,7 @@ extern MainWindow* g_MainWindow;
 /*static*/ int GameConfiguration::_id_character1 = 1;
 /*static*/ int GameConfiguration::_id_character2 = 2;
 
-/*static*/ MainWindow::AllLevel GameConfiguration::_stage = MainWindow::choice_level_2;
+/*static*/ MainWindow::AllLevel GameConfiguration::_stage = MainWindow::choice_level_1;
 
 /*static*/ QColor GameConfiguration::_color_character1 = Qt::red;
 /*static*/ QColor GameConfiguration::_color_character2 = Qt::blue;
