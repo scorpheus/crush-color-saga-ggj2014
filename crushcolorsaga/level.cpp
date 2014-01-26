@@ -108,7 +108,7 @@ void Level::FinishCreateLevel()
 
     b2BodyDef bodyDefChar1;
     bodyDefChar1.type = b2_dynamicBody;
-    bodyDefChar1.position = graphicalToPhysical(QPointF(70.0f, 10.0f));
+    bodyDefChar1.position = graphicalToPhysical(QPointF(220.0f, 60.0f));
     bodyDefChar1.fixedRotation = true;
 
     b2Body *bodyChar1 = _world->CreateBody(&bodyDefChar1);
@@ -138,6 +138,7 @@ void Level::FinishCreateLevel()
     b2BodyDef bodyDefChar2;
     bodyDefChar2.type = b2_dynamicBody;
     bodyDefChar2.position = graphicalToPhysical(QPointF(220.0f, 60.0f));
+    bodyDefChar2.position = graphicalToPhysical(QPointF(70.0f, 10.0f));
     bodyDefChar2.fixedRotation = true;
 
     b2Body *bodyChar2 = _world->CreateBody(&bodyDefChar2);
@@ -157,11 +158,11 @@ void Level::FinishCreateLevel()
     sprite2.delta = QPointF(18, 21);
     _bodies << sprite2;
 
-    HealthDisplay *health1 = new HealthDisplay(character1);
+    HealthDisplay *health1 = new HealthDisplay(character2);
     addItem(health1);
     health1->moveBy(15, 15);
 
-    HealthDisplay *health2 = new HealthDisplay(character2);
+    HealthDisplay *health2 = new HealthDisplay(character1);
     addItem(health2);
     health2->moveBy(SCENEWIDTH - health2->boundingRect().width() - 15, 15);
 
