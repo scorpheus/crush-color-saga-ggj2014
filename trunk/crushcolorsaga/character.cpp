@@ -151,7 +151,7 @@ void Character::updateShield()
     }
     else if(_shield == VeryStronger)
     {
-        _particleIndex = (_particleIndex + 1) % 6;
+        _particleIndex = (_particleIndex + 1) % 11;
         update();
     }
 }
