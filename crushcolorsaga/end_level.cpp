@@ -16,7 +16,7 @@ EndLevel::EndLevel(QGraphicsScene *parent, QString end_text) :
     timer = new QTimeLine(2000);
     timer->setFrameRange(0, 100);
 
-    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
+    QGraphicsItemAnimation *animation = new QGraphicsItemAnimation(parent);
     animation->setItem(this);
     animation->setTimeLine(timer);
 
