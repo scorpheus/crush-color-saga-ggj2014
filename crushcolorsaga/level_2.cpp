@@ -2,6 +2,7 @@
 
 #include "platform.h"
 #include "level.h"
+#include "contour.h"
 
 void Level_2::CreateLevelPlatformImpl(const QSize &size)
 {
@@ -74,4 +75,9 @@ void Level_2::CreateLevelPlatformImpl(const QSize &size)
     platform = new Platform(5);
     platform->moveBy(16*15, 16*5 );
     addItem(platform);
+}
+
+Contour *Level_2::CreateContour()
+{
+    return new Contour(QList<QRectF>(), this);
 }

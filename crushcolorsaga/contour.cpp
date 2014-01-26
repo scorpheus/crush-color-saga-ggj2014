@@ -4,7 +4,8 @@
 #include <QGraphicsScene>
 
 
-Contour::Contour(QGraphicsScene *parent) :
+Contour::Contour(const QList<QRectF> &borders, QGraphicsScene *parent) :
+    _borders(borders),
     _parent(parent)
 {
 
@@ -20,23 +21,15 @@ void Contour::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     QPixmap _contour_model(":/models/contour");
     int contour_width = QPixmap(":/models/contour").width();
     int contour_height = QPixmap(":/models/contour").height();
-    int nb_width = _parent->width()/contour_width;
-    for(int i=0 ; i< nb_width; i++)
-    {
-        painter->drawPixmap(QPoint(contour_width*i, 0), _contour_model);
-    }
-    for(int i=0 ; i< nb_width; i++)
-    {
-        painter->drawPixmap(QPoint(contour_width*i, _parent->height()-contour_height), _contour_model);
-    }
 
-    int nb_height = _parent->width()/contour_width;
-    for(int i=0 ; i< nb_height; i++)
+    foreach(const QRectF &rect, _borders)
     {
-        painter->drawPixmap(QPoint(0, contour_height*i), _contour_model);
-    }
-    for(int i=0 ; i< nb_height; i++)
-    {
-        painter->drawPixmap(QPoint(_parent->width()-contour_width, contour_height*i), _contour_model);
+        for(qreal i=0 ; i<rect.width() ; i+=contour_width)
+        {
+            for(qreal j=0 ; j<rect.height() ; j+=contour_height)
+            {
+                painter->drawPixmap(QPointF(i, j) + rect.topLeft(), _contour_model);
+            }
+        }
     }
 }
