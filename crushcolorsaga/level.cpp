@@ -120,7 +120,7 @@ void Level::FinishCreateLevel()
 
     b2BodyDef bodyDefChar1;
     bodyDefChar1.type = b2_dynamicBody;
-    bodyDefChar1.position = graphicalToPhysical(QPointF(70.0f, 10.0f));
+    bodyDefChar1.position = graphicalToPhysical(QPointF(70.0f, 60.0f));
     bodyDefChar1.fixedRotation = true;
 
     b2Body *bodyChar1 = _world->CreateBody(&bodyDefChar1);
