@@ -43,7 +43,24 @@ void Character::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidg
     QPixmap pixmap;
     painter->translate(2, 2);
 
-    if(_states.testFlag(ThrowingRight))
+    if(_states.testFlag(Jumping))
+    {
+        if(not _lastDirectionLeft)
+        {
+            painter->translate(32, 0);
+            painter->scale(-1, 1);
+        }
+
+        if(_states.testFlag(ThrowingLeft) || _states.testFlag(ThrowingRight))
+        {
+            pixmap = QPixmap(QString(":/models/hero%1_bubblejump").arg(_id));
+        }
+        else
+        {
+            pixmap = QPixmap(QString(":/models/hero%1_jump").arg(_id));
+        }
+    }
+    else if(_states.testFlag(ThrowingRight))
     {
         painter->translate(32, 0);
         painter->scale(-1, 1);
