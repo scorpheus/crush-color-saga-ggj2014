@@ -58,7 +58,7 @@ class Character : public QObject, public QGraphicsItem
         { return _shield; }
 
     signals:
-        void registerFireBall(QGraphicsItem *fireBall);
+        void registerFireBall(QGraphicsItem *fireBall, bool superPower, Qt::LayoutDirection direction);
         void statesChanged(Character::States changedStates);
 
     public slots:

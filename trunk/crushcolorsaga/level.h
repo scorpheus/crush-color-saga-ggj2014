@@ -49,7 +49,7 @@ class Level : public QGraphicsScene
         void level_changed( const QList<QRectF> & region);
 
     private slots:
-        void registerFireBall(QGraphicsItem *fireBall);
+        void registerFireBall(QGraphicsItem *fireBall, bool superPower, Qt::LayoutDirection direction);
         void characterStatesChanged(Character::States changedStates);
 
     protected:

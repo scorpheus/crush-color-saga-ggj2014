@@ -9,6 +9,7 @@
 #include "gameconfiguration.h"
 #include "end_level.h"
 #include "platform.h"
+#include "fireball.h"
 
 #include <QElapsedTimer>
 #include <QDebug>
@@ -98,7 +99,8 @@ void Level::FinishCreateLevel()
 
     // Register character 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
-    connect(character1, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
+    connect(character1, SIGNAL(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)),
+                        SLOT(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)));
     connect(character1, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged(Character::States)));
     addItem(character1);
 
@@ -126,7 +128,8 @@ void Level::FinishCreateLevel()
 
     // Register character 2
     character2 = new Character(GameConfiguration::_id_character2, this, GameConfiguration::_color_character2);
-    connect(character2, SIGNAL(registerFireBall(QGraphicsItem*)), SLOT(registerFireBall(QGraphicsItem*)));
+    connect(character2, SIGNAL(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)),
+                        SLOT(registerFireBall(QGraphicsItem*,bool,Qt::LayoutDirection)));
     connect(character2, SIGNAL(statesChanged(Character::States)), SLOT(characterStatesChanged(Character::States)));
     addItem(character2);
 
@@ -249,12 +252,40 @@ void Level::timerEvent(QTimerEvent *event)
 
     _world->Step(B2_TIMESTEP, B2_VELOCITY_ITERATIONS, B2_POSITION_ITERATIONS);
 
-    for(int i=0 ; i<_bodies.count() ; i++)
+    QMutableListIterator<DynamicSprite> iterator(_bodies);
+    while(iterator.hasNext())
     {
-        b2Vec2 position = _bodies[i].body->GetPosition();
-        float32 angle = _bodies[i].body->GetAngle();
-        _bodies[i].item->setPos(physicalToGraphical(position) - _bodies[i].delta);
-        _bodies[i].item->setRotation(-(angle * 360.0) / (2 * 3.14));
+        DynamicSprite &sprite = iterator.next();
+        b2Vec2 position = sprite.body->GetPosition();
+        float32 angle = sprite.body->GetAngle();
+        sprite.item->setPos(physicalToGraphical(position) - sprite.delta);
+        sprite.item->setRotation(-(angle * 360.0) / (2 * 3.14));
+
+        if(sprite.item->type() == QGraphicsItem::UserType + 102)
+        {
+            qreal speed = qAbs(sprite.body->GetLinearVelocity().x);
+            if(speed < 0.95)
+            {
+                QRectF fireRect = sprite.item->boundingRect().translated(sprite.item->pos());
+
+                Character *enemy = character2;
+                if(sprite.item == character2)
+                {
+                    enemy = character1;
+                }
+
+                QRectF enemyRect = enemy->boundingRect().translated(enemy->pos());
+                if(fireRect.intersects(enemyRect))
+                {
+                    int delta = ((FireBall *)sprite.item)->isSuperPower() ? 10 : 5;
+                    enemy->setCharacterHealth(enemy->getCharacterHealth() - delta);
+                }
+
+                delete sprite.item;
+                _world->DestroyBody(sprite.body);
+                iterator.remove();
+            }
+        }
     }
 
     punchingChecker();
@@ -290,7 +321,7 @@ void Level::level_changed( const QList<QRectF> & region )
     }
 }
 
-void Level::registerFireBall(QGraphicsItem *fireBall)
+void Level::registerFireBall(QGraphicsItem *fireBall, bool superPower, Qt::LayoutDirection direction)
 {
     addItem(fireBall);
 
@@ -312,8 +343,8 @@ void Level::registerFireBall(QGraphicsItem *fireBall)
     fixtureDefFireBall.friction = 0.0f;
     bodyFireBall->CreateFixture(&fixtureDefFireBall);
 
-    // TODO : set velocity and destruction power according to superPower property (and direction)
-    bodyFireBall->SetLinearVelocity(b2Vec2(1, 0));
+    qreal factor = direction == Qt::LeftToRight ? 1.0 : -1.0;
+    bodyFireBall->SetLinearVelocity(b2Vec2((superPower ? 2 : 1) * factor, 0));
 
     DynamicSprite spriteBall;
     spriteBall.body = bodyFireBall;
