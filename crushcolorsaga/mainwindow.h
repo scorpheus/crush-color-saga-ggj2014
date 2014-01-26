@@ -7,6 +7,8 @@ namespace Ui { class MainWindow; }
 
 #include <Phonon/MediaObject>
 
+class SoundManager;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -30,7 +32,8 @@ class MainWindow : public QMainWindow
 
     private:
         Ui::MainWindow *_ui;
-        Phonon::MediaObject* music;
+        Phonon::MediaObject* music;                
+        SoundManager *_sound_manager;
 
     AllLevel _current_level;
 

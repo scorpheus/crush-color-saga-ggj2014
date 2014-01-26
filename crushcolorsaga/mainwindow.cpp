@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "gameconfiguration.h"
+#include "soundmanager.h"
 
 #include "level_1.h"
 #include "level_2.h"
-
 
 MainWindow* g_MainWindow;
 
@@ -22,9 +22,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _ui->graphicsView->scale(2, 2);
 
+    _sound_manager = new SoundManager();
+
     music = Phonon::createPlayer(Phonon::MusicCategory, Phonon::MediaSource(":/models/background_sound"));
     connect(music, SIGNAL(aboutToFinish()), this, SLOT(restartVideo()));
-    //music->play();
+  //  music->play();
 }
 
 MainWindow::~MainWindow()
