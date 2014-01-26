@@ -19,7 +19,7 @@
         <file alias="particle_2">assets/spr_32x32_particule_blanc_3.png</file>
         <file alias="particle_3">assets/spr_32x32_particule_blanc_4.png</file>
         <file alias="particle_4">assets/spr_32x32_particule_blanc_5.png</file>
-        <file alias="particle_5">assets/spr_32x32_particule_blanc_7.png</file>
+        <file alias="particle_6">assets/spr_32x32_particule_blanc_7.png</file>
         <file alias="select_arrow_left">assets/select_arrow_left.png</file>
         <file alias="select_arrow_right">assets/select_arrow_right.png</file>
         <file alias="background_sound">assets/baston.wav</file>
@@ -38,5 +38,10 @@
         <file alias="snd_explosion">assets/snd_explosionboulettedef.wav</file>
         <file alias="snd_jump">assets/snd_sautdef.wav</file>
         <file alias="snd_shoot">assets/snd_tirdef.wav</file>
+        <file alias="particle_7">assets/spr_32x32_particule_blanc_8.png</file>
+        <file alias="particle_8">assets/spr_32x32_particule_blanc_9.png</file>
+        <file alias="particle_9">assets/spr_32x32_particule_blanc_10.png</file>
+        <file alias="particle_10">assets/spr_32x32_particule_blanc_11.png</file>
+        <file alias="particle_5">assets/spr_32x32_particule_blanc_6.png</file>
     </qresource>
 </RCC>
