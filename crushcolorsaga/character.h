@@ -51,6 +51,8 @@ class Character : public QObject, public QGraphicsItem
         int _Health;
 
         Character::States getStates();
+        int getCharacterHealth();
+        void setCharacterHealth(int health);
 
         inline ShieldState getShield() const
         { return _shield; }

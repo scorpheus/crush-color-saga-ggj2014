@@ -182,6 +182,46 @@ b2Vec2 Level::graphicalToPhysical(const QPointF &point)
     return b2Vec2(point.x() / SCALE, (height() - point.y()) / SCALE);
 }
 
+void Level::punchingChecker()
+{
+    QRectF body1Rect = _bodies[0].item->boundingRect();
+    QRectF body2Rect = _bodies[1].item->boundingRect();
+
+    body1Rect.translate(_bodies[0].item->pos());
+    body2Rect.translate(_bodies[1].item->pos());
+
+
+    if(body1Rect.intersects(body2Rect))
+    {
+        if(body1Rect.x() > body2Rect.x())
+        {
+            if(((Character*)_bodies[0].item)->getStates().testFlag(Character::HittingLeft))
+            {
+                ((Character*)_bodies[1].item)->setCharacterHealth(((Character*)_bodies[1].item)->getCharacterHealth()*0.99);
+                qDebug() << ((Character*)_bodies[1].item)->getCharacterHealth();
+            }
+            else if(((Character*)_bodies[1].item)->getStates().testFlag(Character::HittingRight))
+            {
+                ((Character*)_bodies[0].item)->setCharacterHealth(((Character*)_bodies[0].item)->getCharacterHealth()*0.99);
+                qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
+            }
+        }
+        else if(body1Rect.x() < body2Rect.x())
+        {
+            if(((Character*)_bodies[1].item)->getStates().testFlag(Character::HittingLeft))
+            {
+                ((Character*)_bodies[0].item)->setCharacterHealth(((Character*)_bodies[0].item)->getCharacterHealth()*0.99);
+                qDebug() << ((Character*)_bodies[0].item)->getCharacterHealth();
+            }
+            else if(((Character*)_bodies[0].item)->getStates().testFlag(Character::HittingRight))
+            {
+                ((Character*)_bodies[1].item)->setCharacterHealth(((Character*)_bodies[1].item)->getCharacterHealth()*0.99);
+                qDebug() << ((Character*)_bodies[1].item)->getCharacterHealth();
+            }
+        }
+    }
+}
+
 void Level::timerEvent(QTimerEvent *event)
 {
     for(int i=0 ; i<_bodies.count() ; i++)
@@ -216,6 +256,8 @@ void Level::timerEvent(QTimerEvent *event)
         _bodies[i].item->setPos(physicalToGraphical(position) - _bodies[i].delta);
         _bodies[i].item->setRotation(-(angle * 360.0) / (2 * 3.14));
     }
+
+    punchingChecker();
 
     _world->ClearForces();
     _world->DrawDebugData();
