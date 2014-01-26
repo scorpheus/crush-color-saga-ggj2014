@@ -44,6 +44,8 @@ class Character : public QObject, public QGraphicsItem
 
         int _Health;
 
+        Character::States getStates();
+
     public slots:
         void setStates(Character::States states);
 
