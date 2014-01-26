@@ -44,7 +44,7 @@ void MainWindow::ChangeLevel(AllLevel level_choice)
 {
     Level* _level;
     if(level_choice == choice_level_1)
-        _level = new Level_2("level_test");
+        _level = new Level_1("level_test");
     else
     if(level_choice == choice_level_2)
         _level = new Level_2("bg_level_3");

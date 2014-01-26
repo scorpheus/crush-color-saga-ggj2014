@@ -13,6 +13,7 @@
 class Character;
 class EndLevel;
 class Background;
+class Contour;
 
 class Level : public QGraphicsScene
 {
@@ -58,6 +59,7 @@ class Level : public QGraphicsScene
 
     protected:
         virtual void CreateLevelPlatformImpl(const QSize &size) = 0;
+        virtual Contour *CreateContour();
         virtual void timerEvent(QTimerEvent *event);
         b2World*  _world;
 };

@@ -38,8 +38,6 @@ Level::Level(QString level_name, QObject *parent) :
     setSceneRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
     startTimer(0);
 
-    addItem(new Contour(this));
-
     _world = new b2World(b2Vec2(0.0f, -0.1f));
     _world->SetAllowSleeping(false);
     connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
@@ -53,6 +51,17 @@ Level::~Level()
 void Level::CreateLevelPlatform()
 {
     CreateLevelPlatformImpl(QSize(SCENEWIDTH, SCENEHEIGHT));
+}
+
+Contour *Level::CreateContour()
+{
+    QList<QRectF> borders;
+    borders << QRectF(0, 0, SCENEWIDTH, 8);
+    borders << QRectF(0, SCENEHEIGHT - 8, SCENEWIDTH, 8);
+    borders << QRectF(0, 8, 8, SCENEHEIGHT - 16);
+    borders << QRectF(SCENEWIDTH - 8, 8, 8, SCENEHEIGHT - 16);
+
+    return new Contour(borders, this);
 }
 
 void Level::FinishCreateLevel()
@@ -71,45 +80,24 @@ void Level::FinishCreateLevel()
             b2PolygonShape boxPlatform;
             boxPlatform.SetAsBox(platform->boundingRect().width() / (2.0 * SCALE),
                                  platform->boundingRect().height() / (2.0 * SCALE));
-            bodyPlatform->CreateFixture(&boxPlatform, 0.0f)->SetFriction(0.0);
+            bodyPlatform->CreateFixture(&boxPlatform, 0.0f)->SetFriction(0.3);
         }
     }
 
-    b2BodyDef bodyDefBottomBorder;
-    QPointF centerBottomBorder = QPointF(SCENEWIDTH/2, SCENEHEIGHT);
-    bodyDefBottomBorder.position = graphicalToPhysical(centerBottomBorder);
-    b2Body* bodyBottomBorder = _world->CreateBody(&bodyDefBottomBorder);
-    b2PolygonShape boxBottomBorder;
-    boxBottomBorder.SetAsBox((SCENEWIDTH / (2 * SCALE)),
-                             8/SCALE);
-    bodyBottomBorder->CreateFixture(&boxBottomBorder, 0.0f);
-
-    b2BodyDef bodyDefLeftBorder;
-    QPointF centerLeftBorder = QPointF(0, SCENEHEIGHT/2);
-    bodyDefLeftBorder.position = graphicalToPhysical(centerLeftBorder);
-    b2Body* bodyLeftBorder = _world->CreateBody(&bodyDefLeftBorder);
-    b2PolygonShape boxLeftBorder;
-    boxLeftBorder.SetAsBox(8/SCALE,
-                             SCENEHEIGHT);
-    bodyLeftBorder->CreateFixture(&boxLeftBorder, 0.0f);
-
-    b2BodyDef bodyDefRightBorder;
-    QPointF centerRightBorder = QPointF(SCENEWIDTH, SCENEHEIGHT/2);
-    bodyDefRightBorder.position = graphicalToPhysical(centerRightBorder);
-    b2Body* bodyRightBorder = _world->CreateBody(&bodyDefRightBorder);
-    b2PolygonShape boxRightBorder;
-    boxRightBorder.SetAsBox(8/SCALE,
-                             SCENEHEIGHT);
-    bodyRightBorder->CreateFixture(&boxRightBorder, 0.0f);
-
-    b2BodyDef bodyDefTopBorder;
-    QPointF centerTopBorder = QPointF(SCENEWIDTH/2, 0);
-    bodyDefTopBorder.position = graphicalToPhysical(centerTopBorder);
-    b2Body* bodyTopBorder = _world->CreateBody(&bodyDefTopBorder);
-    b2PolygonShape boxTopBorder;
-    boxTopBorder.SetAsBox((SCENEWIDTH / (2 * SCALE)),
-                          8/SCALE);
-    bodyTopBorder->CreateFixture(&boxTopBorder, 0.0f);
+    // Register borders
+    Contour *contour = CreateContour();
+    contour->setZValue(-50);
+    addItem(contour);
+    foreach(const QRectF &border, contour->getBorders())
+    {
+        b2BodyDef bodyDefBorder;
+        bodyDefBorder.position = graphicalToPhysical(border.center());
+        b2Body* bodyBorder = _world->CreateBody(&bodyDefBorder);
+        b2PolygonShape boxBorder;
+        boxBorder.SetAsBox(border.width() / (2 * SCALE),
+                           border.height() / (2 * SCALE));
+        bodyBorder->CreateFixture(&boxBorder, 0.0f);
+    }
 
     // Register character 1
     character1 = new Character(GameConfiguration::_id_character1, this, GameConfiguration::_color_character1);
@@ -120,7 +108,7 @@ void Level::FinishCreateLevel()
 
     b2BodyDef bodyDefChar1;
     bodyDefChar1.type = b2_dynamicBody;
-    bodyDefChar1.position = graphicalToPhysical(QPointF(70.0f, 60.0f));
+    bodyDefChar1.position = graphicalToPhysical(QPointF(70.0f, 10.0f));
     bodyDefChar1.fixedRotation = true;
 
     b2Body *bodyChar1 = _world->CreateBody(&bodyDefChar1);
@@ -381,7 +369,39 @@ void Level::timerEvent(QTimerEvent *event)
 
 void Level::checkCharactersOutside()
 {
+    for(int i=0 ; i<_bodies.count() ; i++)
+    {
+        if(_bodies[i].item->type() == QGraphicsItem::UserType + 101)
+        {
+            Character *character = (Character *)_bodies[i].item;
+            QPointF pos = character->pos();
+            QPointF center = character->boundingRect().translated(character->pos()).center();
+            QPointF newPosition;
 
+            if(center.x() > SCENEWIDTH)
+            {
+                newPosition = pos - QPointF(SCENEWIDTH, 0);
+            }
+            else if(center.x() < 0)
+            {
+                newPosition = pos + QPointF(SCENEWIDTH, 0);
+            }
+
+            if(center.y() > SCENEHEIGHT)
+            {
+                newPosition = pos - QPointF(0, SCENEHEIGHT);
+            }
+            else if(center.y() < 0)
+            {
+                newPosition = pos + QPointF(0, SCENEHEIGHT);
+            }
+
+            if(not newPosition.isNull())
+            {
+                _bodies[i].body->SetTransform(graphicalToPhysical(newPosition + _bodies[i].delta), 0);
+            }
+        }
+    }
 }
 
 void Level::level_changed( const QList<QRectF> & region )

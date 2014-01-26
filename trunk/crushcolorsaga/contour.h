@@ -8,15 +8,17 @@ class QGraphicsScene;
 class Contour : public QGraphicsItem
 {
     public:
-        Contour(QGraphicsScene *parent);
+        Contour(const QList<QRectF> &borders, QGraphicsScene *parent);
 
         virtual QRectF boundingRect() const;
 
         virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+        inline const QList<QRectF> &getBorders() const
+        { return _borders; }
+
     private:
-        QPoint _start;
-        int _width;
+        QList<QRectF> _borders;
         QGraphicsScene *_parent;
 };
 
