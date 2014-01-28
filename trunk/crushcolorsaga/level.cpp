@@ -36,9 +36,9 @@ Level::Level(QString level_name, QObject *parent) :
     _bodies()
 {
     setSceneRect(0, 0, SCENEWIDTH, SCENEHEIGHT);
-    startTimer(0);
+    startTimer(1000 / 60);
 
-    _world = new b2World(b2Vec2(0.0f, -0.1f));
+    _world = new b2World(b2Vec2(0.0f, -7.0f));
     _world->SetAllowSleeping(false);
     connect(this, SIGNAL(changed( const QList<QRectF> &)), this, SLOT(level_changed( const QList<QRectF> &)));
 }
@@ -299,11 +299,11 @@ void Level::timerEvent(QTimerEvent *event)
 
             if(characterState.testFlag(Character::MovingLeft))
             {
-                vel.x -= 0.3;
+                vel.x -= 3;
             }
             if(characterState.testFlag(Character::MovingRight))
             {
-                vel.x += 0.3;
+                vel.x += 3;
             }
 
             _bodies[i].body->SetLinearVelocity(vel);
@@ -459,7 +459,7 @@ void Level::registerFireBall(QGraphicsItem *fireBall, bool superPower, Qt::Layou
     bodyFireBall->CreateFixture(&fixtureDefFireBall);
 
     qreal factor = direction == Qt::LeftToRight ? 1.0 : -1.0;
-    bodyFireBall->SetLinearVelocity(b2Vec2((superPower ? 2 : 1) * factor, 0));
+    bodyFireBall->SetLinearVelocity(b2Vec2((superPower ? 10 : 5) * factor, 0));
 
     DynamicSprite spriteBall;
     spriteBall.body = bodyFireBall;
@@ -479,7 +479,7 @@ void Level::characterStatesChanged(Character::States changedStates)
         {
             if(changedStates.testFlag(Character::Jumping) && characterState.testFlag(Character::Jumping))
             {
-                float impulse = _bodies[i].body->GetMass() * 0.55;
+                float impulse = _bodies[i].body->GetMass() * 5;
                 _bodies[i].body->ApplyLinearImpulse(b2Vec2(0,impulse), _bodies[i].body->GetWorldCenter(), true);
             }
         }
