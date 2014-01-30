@@ -40,6 +40,7 @@ void InputManager::stopHit()
 
 bool InputManager::eventFilter(QObject *object, QEvent *event)
 {
+    Q_UNUSED(object);
     if(event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = (QKeyEvent *)(event);

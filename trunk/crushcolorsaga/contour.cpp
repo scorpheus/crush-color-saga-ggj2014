@@ -18,6 +18,8 @@ QRectF Contour::boundingRect() const
 
 void Contour::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     QPixmap _contour_model(":/models/contour");
     int contour_width = QPixmap(":/models/contour").width();
     int contour_height = QPixmap(":/models/contour").height();

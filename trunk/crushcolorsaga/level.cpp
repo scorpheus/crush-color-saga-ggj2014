@@ -287,6 +287,7 @@ void Level::punchingChecker()
 
 void Level::timerEvent(QTimerEvent *event)
 {
+    Q_UNUSED(event);
     for(int i=0 ; i<_bodies.count() ; i++)
     {
         if(_bodies[i].item->type() == QGraphicsItem::UserType + 101)
@@ -407,12 +408,13 @@ void Level::checkCharactersOutside()
 
 void Level::level_changed( const QList<QRectF> & region )
 {
+    Q_UNUSED(region);
     // check if one of the character died
     if(character1->_Health <= 0)
     {
         if(!_end_level)
         {
-            _end_level = new EndLevel(this, "Player 2: YOU WON !!");
+            _end_level = new EndLevel(this, "Player 1: YOU WON !!");
             _end_level->hide();
             addItem(_end_level);
             _end_level->show();
@@ -425,7 +427,7 @@ void Level::level_changed( const QList<QRectF> & region )
     {
         if(!_end_level)
         {
-            _end_level = new EndLevel(this, "Player 1: YOU WON !!");
+            _end_level = new EndLevel(this, "Player 2: YOU WON !!");
             _end_level->hide();
             addItem(_end_level);
             _end_level->show();
