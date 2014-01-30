@@ -16,6 +16,8 @@ QRectF HealthDisplay::boundingRect() const
 
 void HealthDisplay::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     painter->setOpacity(1);
 
     QRectF adjustedRect = boundingRect().adjusted(1, 1, -1, -1);

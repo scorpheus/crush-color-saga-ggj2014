@@ -15,6 +15,9 @@ QRectF Platform::boundingRect() const
 
 void Platform::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     for(int i=0 ; i<_width ; i++)
     {
         painter->drawPixmap(0, 0, QPixmap(":/models/bloc"));

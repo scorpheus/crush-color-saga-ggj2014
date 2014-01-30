@@ -6,6 +6,7 @@
 
 void Level_2::CreateLevelPlatformImpl(const QSize &size)
 {
+    Q_UNUSED(size);
     Platform *platform = new Platform(5);
     platform->moveBy(0, 0);
     addItem(platform);
